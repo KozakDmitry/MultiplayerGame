@@ -14,4 +14,7 @@ class MULTIPLAYERGAME_API AMGGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+
+	public:
+	AMGGameModeBase();
 };
