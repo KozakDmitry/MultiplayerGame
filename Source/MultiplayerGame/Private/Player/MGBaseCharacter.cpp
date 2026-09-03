@@ -3,10 +3,14 @@
 #include "Player/MGBaseCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/MGHealthComponent.h"
+#include "Components/TextRenderComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "InputActionValue.h"
+#include "GameFramework/Controller.h"
+#include "Engine/DamageEvents.h"
 
 DEFINE_LOG_CATEGORY_STATIC(AMGBaseCharacterLog, All, All)
 
@@ -23,18 +27,32 @@ AMGBaseCharacter::AMGBaseCharacter(const FObjectInitializer &ObjInit)
 	SpringArmComponent->bUsePawnControlRotation = true;
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	HealthComponent = CreateDefaultSubobject<UMGHealthComponent>("HealthComponent");
+
+	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+	HealthTextComponent->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
 void AMGBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	check(HealthComponent);
+	check(HealthTextComponent);
+	check(GetCharacterMovement());
+	OnHealthChanged(HealthComponent->GetHealth());
+	HealthComponent->OnDeath.AddUObject(this, &AMGBaseCharacter::OnDeath);
+	HealthComponent->OnHealthChange.AddUObject(this, &AMGBaseCharacter::OnHealthChanged);
+
+	LandedDelegate.AddDynamic(this, &AMGBaseCharacter::OnGroundLanded);
 }
 
 bool AMGBaseCharacter::IsRunning() const
 {
-	UE_LOG(AMGBaseCharacterLog, Display, TEXT("Sprint check: %s"),
-		   (IsWantToSprint && IsMovingForward && !GetVelocity().IsZero()) ? TEXT("True") : TEXT("False"));
+	/*UE_LOG(AMGBaseCharacterLog, Display, TEXT("Sprint check: %s"),
+		   (IsWantToSprint && IsMovingForward && !GetVelocity().IsZero()) ? TEXT("True") : TEXT("False"));*/
 	return IsWantToSprint && IsMovingForward && !GetVelocity().IsZero();
 }
 
@@ -55,7 +73,11 @@ float AMGBaseCharacter::GetMovementDirection() const
 void AMGBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 }
+
+
+
 
 // Called to bind functionality to input
 void AMGBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
@@ -113,11 +135,36 @@ void AMGBaseCharacter::LookAround(const FInputActionValue &Value)
 void AMGBaseCharacter::SprintStarted()
 {
 	IsWantToSprint = true;
-	UE_LOG(AMGBaseCharacterLog, Display, TEXT("Sprint Wanted: %s"), IsWantToSprint ? TEXT("true") : TEXT("false"));
+	//UE_LOG(AMGBaseCharacterLog, Display, TEXT("Sprint Wanted: %s"), IsWantToSprint ? TEXT("true") : TEXT("false"));
 }
 
 void AMGBaseCharacter::SprintEnded()
 {
 	IsWantToSprint = false;
-	UE_LOG(AMGBaseCharacterLog, Display, TEXT("Sprint ended: %s"), IsWantToSprint ? TEXT("true") : TEXT("false"));
+	/*UE_LOG(AMGBaseCharacterLog, Display, TEXT("Sprint ended: %s"), IsWantToSprint ? TEXT("true") : TEXT("false"));*/
+}
+void AMGBaseCharacter::OnDeath()
+{
+	UE_LOG(AMGBaseCharacterLog, Display, TEXT("Player %s is Dead!"), *GetName());
+	PlayAnimMontage(DeathAnimation);
+	GetCharacterMovement()->DisableMovement();
+	SetLifeSpan(5.0f);
+	if (Controller)
+	{
+		Controller->ChangeState(NAME_Spectating);
+	}
+}
+
+void AMGBaseCharacter::OnHealthChanged(float Health)
+{
+	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
+
+void AMGBaseCharacter::OnGroundLanded(const FHitResult &Hit)
+{
+	const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
+	if (FallVelocityZ < LandedDamageVelocity.X)
+		return;
+	const float FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
+	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }
