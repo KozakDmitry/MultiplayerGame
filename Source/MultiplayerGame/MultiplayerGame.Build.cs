@@ -14,7 +14,10 @@ public class MultiplayerGame : ModuleRules
 
         PublicIncludePaths.AddRange(new string[] { "MultiplayerGame/Public/Player",
                                                    "MultiplayerGame/Public/Components",
-                                                   "MultiplayerGame/Public/Dev"});
+                                                   "MultiplayerGame/Public/Dev",
+                                                   "MultiplayerGame/Public/Weapon",
+                                                   "MultiplayerGame/Public/UI",
+        });
 
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

@@ -1,16 +1,19 @@
 // Multiplayer Game
 
 #include "Player/MGBaseCharacter.h"
+
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/MGHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "MGWeaponComponent.h"
+
+#include "Engine/DamageEvents.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "InputActionValue.h"
 #include "GameFramework/Controller.h"
-#include "Engine/DamageEvents.h"
+#include "InputActionValue.h"
 
 DEFINE_LOG_CATEGORY_STATIC(AMGBaseCharacterLog, All, All)
 
@@ -25,6 +28,7 @@ AMGBaseCharacter::AMGBaseCharacter(const FObjectInitializer &ObjInit)
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(GetRootComponent());
 	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->SocketOffset = FVector(0.0f, 100.0f, 80.0f);
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
@@ -32,6 +36,10 @@ AMGBaseCharacter::AMGBaseCharacter(const FObjectInitializer &ObjInit)
 
 	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
 	HealthTextComponent->SetupAttachment(GetRootComponent());
+	HealthTextComponent->SetOwnerNoSee(true);
+
+
+	WeaponComponent = CreateDefaultSubobject<UMGWeaponComponent>("WeaponComponent");
 }
 
 // Called when the game starts or when spawned
@@ -47,6 +55,7 @@ void AMGBaseCharacter::BeginPlay()
 	HealthComponent->OnHealthChange.AddUObject(this, &AMGBaseCharacter::OnHealthChanged);
 
 	LandedDelegate.AddDynamic(this, &AMGBaseCharacter::OnGroundLanded);
+
 }
 
 bool AMGBaseCharacter::IsRunning() const
@@ -73,16 +82,16 @@ float AMGBaseCharacter::GetMovementDirection() const
 void AMGBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
-
-
-
 
 // Called to bind functionality to input
 void AMGBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	check(PlayerInputComponent);
+	check(WeaponComponent);
+
 
 	if (UEnhancedInputComponent *EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
@@ -91,6 +100,7 @@ void AMGBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AMGBaseCharacter::Jump);
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AMGBaseCharacter::SprintStarted);
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AMGBaseCharacter::SprintEnded);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, WeaponComponent, &UMGWeaponComponent::Fire);
 	}
 
 	if (const APlayerController *PlayerController = Cast<APlayerController>(GetController()))
@@ -135,7 +145,7 @@ void AMGBaseCharacter::LookAround(const FInputActionValue &Value)
 void AMGBaseCharacter::SprintStarted()
 {
 	IsWantToSprint = true;
-	//UE_LOG(AMGBaseCharacterLog, Display, TEXT("Sprint Wanted: %s"), IsWantToSprint ? TEXT("true") : TEXT("false"));
+	// UE_LOG(AMGBaseCharacterLog, Display, TEXT("Sprint Wanted: %s"), IsWantToSprint ? TEXT("true") : TEXT("false"));
 }
 
 void AMGBaseCharacter::SprintEnded()
@@ -159,6 +169,8 @@ void AMGBaseCharacter::OnHealthChanged(float Health)
 {
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
+
+
 
 void AMGBaseCharacter::OnGroundLanded(const FHitResult &Hit)
 {
