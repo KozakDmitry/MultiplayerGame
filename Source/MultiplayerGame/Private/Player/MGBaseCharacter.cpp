@@ -8,6 +8,7 @@
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MGWeaponComponent.h"
+#include "Components/CapsuleComponent.h"
 
 #include "Engine/DamageEvents.h"
 #include "EnhancedInputComponent.h"
@@ -163,6 +164,7 @@ void AMGBaseCharacter::OnDeath()
 	{
 		Controller->ChangeState(NAME_Spectating);
 	}
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void AMGBaseCharacter::OnHealthChanged(float Health)

@@ -52,5 +52,6 @@ void UMGWeaponComponent::SpawnWeapon()
 	
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
 	CurrentWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponAttackPointName);
+	CurrentWeapon->SetOwner(GetOwner());
 }
 // Called every frame
