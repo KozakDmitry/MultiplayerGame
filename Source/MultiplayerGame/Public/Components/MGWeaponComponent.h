@@ -6,9 +6,7 @@
 #include "CoreMinimal.h"
 #include "MGWeaponComponent.generated.h"
 
-
 class AMGBaseWeapon;
-
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
@@ -21,16 +19,26 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 
 	void StartFire();
 	void StopFire();
+	void NextWeapon();
+
 
   protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<AMGBaseWeapon> WeaponClass;
+	TArray<TSubclassOf<AMGBaseWeapon>> WeaponClasses;
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FName WeaponAttackPointName = "WeaponSocket";
+	FName WeaponEquipSocketName = "WeaponSocket";
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	FName WeaponArmorySocketName = "ArmorySocket";
 	virtual void BeginPlay() override;
 
   private:
 	UPROPERTY()
 	AMGBaseWeapon *CurrentWeapon = nullptr;
-	void SpawnWeapon();
+	UPROPERTY()
+	TArray<AMGBaseWeapon *> Weapons;
+	int32 CurrentWeaponIndex;
+	void SpawnWeapons();
+	void AttachWeaponToSocket(AMGBaseWeapon *Weapon, USceneComponent *SceneComponent, const FName &SocketName);
+	void EquipWeapon(int32 WeaponIndex);
+	void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };

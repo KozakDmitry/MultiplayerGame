@@ -104,6 +104,8 @@ void AMGBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, WeaponComponent, &UMGWeaponComponent::StartFire);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, WeaponComponent,
 		  &UMGWeaponComponent::StopFire);
+		EnhancedInputComponent->BindAction(NextWeaponAction, ETriggerEvent::Completed, WeaponComponent,
+										   &UMGWeaponComponent::NextWeapon);
 	}
 
 	if (const APlayerController *PlayerController = Cast<APlayerController>(GetController()))
@@ -167,6 +169,7 @@ void AMGBaseCharacter::OnDeath()
 		Controller->ChangeState(NAME_Spectating);
 	}
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	WeaponComponent->StopFire();
 }
 
 void AMGBaseCharacter::OnHealthChanged(float Health)

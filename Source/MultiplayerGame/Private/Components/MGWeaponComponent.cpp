@@ -14,6 +14,18 @@ UMGWeaponComponent::UMGWeaponComponent()
 	// ...
 }
 
+void UMGWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	CurrentWeapon = nullptr;
+	for (auto Weapon : Weapons)
+	{
+		Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		Weapon->Destroy();
+	}
+	Weapons.Empty();
+	Super::EndPlay(EndPlayReason);
+}
+
 void UMGWeaponComponent::StartFire()
 {
 	if (!CurrentWeapon)
@@ -37,29 +49,61 @@ void UMGWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SpawnWeapon();
-	// ...
+	SpawnWeapons();
+	EquipWeapon(CurrentWeaponIndex);
 }
 
-void UMGWeaponComponent::SpawnWeapon()
+void UMGWeaponComponent::SpawnWeapons()
 {
-	if (!GetWorld())
+	
+	ACharacter *Character = Cast<ACharacter>(GetOwner());
+	if (!Character|| !GetWorld())
 	{
 		return;
 	}
+
+	for (auto WeaponClass : WeaponClasses)
+	{
+		auto Weapon = GetWorld()->SpawnActor<AMGBaseWeapon>(WeaponClass);
+		if (!Weapon)
+		{
+			continue;
+		}
+		Weapon->SetOwner(Character);
+		Weapons.Add(Weapon);
+
+		AttachWeaponToSocket(Weapon, Character->GetMesh(), WeaponArmorySocketName);
+	}
+	
+	
+}
+
+void UMGWeaponComponent::AttachWeaponToSocket(AMGBaseWeapon *Weapon, USceneComponent *SceneComponent, const FName& SocketName)
+{
+	if (!Weapon || !SceneComponent)
+	{
+		return;
+	}
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+	Weapon->AttachToComponent(SceneComponent, AttachmentRules, SocketName);
+}
+void UMGWeaponComponent::EquipWeapon(int32 WeaponIndex)
+{
 	ACharacter *Character = Cast<ACharacter>(GetOwner());
 	if (!Character)
 	{
 		return;
 	}
-	CurrentWeapon = GetWorld()->SpawnActor<AMGBaseWeapon>(WeaponClass);
-	if (!CurrentWeapon)
+	if (CurrentWeapon)
 	{
-		return;
+		AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponArmorySocketName);
+		StopFire();
 	}
-	
-	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
-	CurrentWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponAttackPointName);
-	CurrentWeapon->SetOwner(GetOwner());
+	CurrentWeapon = Weapons[WeaponIndex];
+	AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponEquipSocketName);
 }
-// Called every frame
+void UMGWeaponComponent::NextWeapon()
+{
+	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
+	EquipWeapon(CurrentWeaponIndex);
+}
