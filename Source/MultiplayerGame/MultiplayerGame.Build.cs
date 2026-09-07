@@ -17,6 +17,7 @@ public class MultiplayerGame : ModuleRules
                                                    "MultiplayerGame/Public/Dev",
                                                    "MultiplayerGame/Public/Weapon",
                                                    "MultiplayerGame/Public/UI",
+                                                   "MultiplayerGame/Public/Animations",
         });
 
         // Uncomment if you are using Slate UI

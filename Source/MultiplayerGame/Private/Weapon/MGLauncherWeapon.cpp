@@ -11,7 +11,7 @@ void AMGLauncherWeapon::StartFire()
 
 void AMGLauncherWeapon::MakeShot()
 {
-	if (!GetWorld())
+	if (!GetWorld()||IsAmmoEmpty())
 	{
 		return;
 	}
@@ -37,6 +37,6 @@ void AMGLauncherWeapon::MakeShot()
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 	//Set params to Do
-
+	DecreaseAmmo();
 }
 

@@ -31,6 +31,7 @@ void AMGBaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	check(WeaponMesh);
+	CurrentAmmo = DefaultAmmo;
 }
 
 void AMGBaseWeapon::MakeShot()
@@ -102,6 +103,42 @@ void AMGBaseWeapon::MakeHit(FHitResult &HitResult, const FVector &TraceStart, co
 	CollisionParams.AddIgnoredActor(GetOwner());
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility,
 										 CollisionParams);
+}
+
+void AMGBaseWeapon::DecreaseAmmo()
+{
+	CurrentAmmo.Bullets--;
+	LogAmmo();
+	if (IsClipEmpty() && !IsAmmoEmpty())
+	{
+		ChangeClip();
+	}
+}
+
+bool AMGBaseWeapon::IsAmmoEmpty() const
+{
+	return CurrentAmmo.Clips==0 && IsClipEmpty() && !CurrentAmmo.Infinite;
+}
+
+bool AMGBaseWeapon::IsClipEmpty() const
+{
+	return CurrentAmmo.Bullets ==0;
+}
+
+void AMGBaseWeapon::ChangeClip()
+{
+	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+	if (!CurrentAmmo.Infinite)
+	{
+		CurrentAmmo.Clips--;
+	}
+}
+
+void AMGBaseWeapon::LogAmmo()
+{
+	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " / ";
+	AmmoInfo += CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
+	UE_LOG(BaseWeaponLog, Display, TEXT("%s"), *AmmoInfo);
 }
 
 UE_ENABLE_OPTIMIZATION

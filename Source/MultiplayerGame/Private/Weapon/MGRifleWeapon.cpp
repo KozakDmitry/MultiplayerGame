@@ -13,19 +13,20 @@ void AMGRifleWeapon::StartFire()
 void AMGRifleWeapon::StopFire()
 {
 	GetWorldTimerManager().ClearTimer(ShotTimerHandle);
-	MakeShot();
 }
 
 void AMGRifleWeapon::MakeShot()
 {
-	if (!GetWorld())
+	if (!GetWorld()||IsAmmoEmpty())
 	{
+		StopFire();
 		return;
 	}
 
 	FVector TraceStart, TraceEnd;
 	if (!GetTraceData(TraceStart, TraceEnd))
 	{
+		StopFire();
 		return;
 	}
 	FHitResult HitResult;
@@ -43,6 +44,7 @@ void AMGRifleWeapon::MakeShot()
 	{
 		DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
 	}
+	DecreaseAmmo();
 }
 
 bool AMGRifleWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const

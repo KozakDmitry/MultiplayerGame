@@ -29,6 +29,9 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 	FName WeaponEquipSocketName = "WeaponSocket";
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName WeaponArmorySocketName = "ArmorySocket";
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UAnimMontage *EquipAnimMontage;
+
 	virtual void BeginPlay() override;
 
   private:
@@ -37,8 +40,19 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 	UPROPERTY()
 	TArray<AMGBaseWeapon *> Weapons;
 	int32 CurrentWeaponIndex;
+	bool EquipAnimInProgress = false;
+
+
+
+
 	void SpawnWeapons();
 	void AttachWeaponToSocket(AMGBaseWeapon *Weapon, USceneComponent *SceneComponent, const FName &SocketName);
 	void EquipWeapon(int32 WeaponIndex);
 	void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	void PlayAnimMontage(UAnimMontage *Animation);
+	void InitAnimations();
+	void OnEquipFinished(USkeletalMeshComponent* MeshComponent);
+
+	bool CanShoot() const;
+	bool CanEquip() const;
 };

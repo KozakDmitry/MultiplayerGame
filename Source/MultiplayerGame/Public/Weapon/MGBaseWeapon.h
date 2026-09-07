@@ -8,6 +8,19 @@
 
 class USkeletalMeshComponent;
 
+USTRUCT(BlueprintType)
+struct FAmmoData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	int32 Bullets;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon", meta = (EditCondition = "!Infinite"))
+	int32 Clips;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	bool Infinite;
+};
+
 UCLASS()
 class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 {
@@ -26,9 +39,11 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 	FName MuzzleSocketName = "MuzzleSocket";
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	float TraceMaxDistance = 1500;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	FAmmoData DefaultAmmo{15, 10, false};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-	float Damage=2.0f;
+	float Damage = 2.0f;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -42,6 +57,14 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 	bool GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const;
 	FVector GetMuzzleWorldLocation() const;
 	void MakeHit(FHitResult &HitResult, const FVector &TraceStart, const FVector &TraceEnd);
+	
+	void DecreaseAmmo();
+	bool IsAmmoEmpty() const;
+	bool IsClipEmpty() const;
+	void ChangeClip();
+	void LogAmmo();
 
+  private:
+	FAmmoData CurrentAmmo;
 
 };
