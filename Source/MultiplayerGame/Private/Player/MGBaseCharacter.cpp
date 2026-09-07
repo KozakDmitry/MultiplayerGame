@@ -101,7 +101,9 @@ void AMGBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AMGBaseCharacter::Jump);
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AMGBaseCharacter::SprintStarted);
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AMGBaseCharacter::SprintEnded);
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, WeaponComponent, &UMGWeaponComponent::Fire);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, WeaponComponent, &UMGWeaponComponent::StartFire);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, WeaponComponent,
+		  &UMGWeaponComponent::StopFire);
 	}
 
 	if (const APlayerController *PlayerController = Cast<APlayerController>(GetController()))

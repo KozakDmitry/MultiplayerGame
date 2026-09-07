@@ -14,16 +14,24 @@ UMGWeaponComponent::UMGWeaponComponent()
 	// ...
 }
 
-void UMGWeaponComponent::Fire()
+void UMGWeaponComponent::StartFire()
 {
 	if (!CurrentWeapon)
 	{
 		return;
 	}
 
-	CurrentWeapon->Fire();
+	CurrentWeapon->StartFire();
 }
+void UMGWeaponComponent::StopFire()
+{
+	if (!CurrentWeapon)
+	{
+		return;
+	}
 
+	CurrentWeapon->StopFire();
+}
 // Called when the game starts
 void UMGWeaponComponent::BeginPlay()
 {

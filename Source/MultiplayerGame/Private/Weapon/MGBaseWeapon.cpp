@@ -19,10 +19,13 @@ AMGBaseWeapon::AMGBaseWeapon()
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
 	SetRootComponent(WeaponMesh);
 }
-void AMGBaseWeapon::Fire()
+void AMGBaseWeapon::StartFire()
 {
-	UE_LOG(BaseWeaponLog, Display, TEXT("IS FIRING!"));
-	MakeShot();
+
+}
+void AMGBaseWeapon::StopFire()
+{
+
 }
 void AMGBaseWeapon::BeginPlay()
 {
@@ -32,32 +35,7 @@ void AMGBaseWeapon::BeginPlay()
 
 void AMGBaseWeapon::MakeShot()
 {
-	if (!GetWorld())
-	{
-		return;
-	}
-
-		FVector TraceStart, TraceEnd;
-	if (!GetTraceData(TraceStart, TraceEnd))
-	{
-		return;
-	}
-	FHitResult HitResult;
-	MakeHit(HitResult, TraceStart, TraceEnd);
-
-	if (HitResult.bBlockingHit)
-	{
-		
-		DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
-		//UE_LOG(BaseWeaponLog, Display, TEXT("Bone: %s"), *HitResult.BoneName.ToString());
-
-		
-	}
-	else
-	{
-		DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
-	}
+	
 }
 
 void AMGBaseWeapon::MakeDamage(FHitResult HitResult)

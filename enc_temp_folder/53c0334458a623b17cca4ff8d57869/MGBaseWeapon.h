@@ -20,11 +20,11 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 	virtual void StopFire();
 
   protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent *WeaponMesh;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FName MuzzleSocketName = "MuzzleSocket";
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	float TraceMaxDistance = 1500;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")

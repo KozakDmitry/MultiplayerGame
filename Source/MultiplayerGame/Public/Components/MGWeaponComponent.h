@@ -19,7 +19,8 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 	// Sets default values for this component's properties
 	UMGWeaponComponent();
 
-	void Fire();
+	void StartFire();
+	void StopFire();
 
   protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
