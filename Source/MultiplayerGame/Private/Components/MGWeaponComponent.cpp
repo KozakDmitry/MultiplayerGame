@@ -1,11 +1,17 @@
 // Multiplayer Game
 
 #include "Components/MGWeaponComponent.h"
-#include "Animations/MGAnimNotify.h"
+#include "Animations/MGReloadAnimNotify.h"
+#include "Animations/UMGEquipAnimNotify.h"
+#include "Animations/AnimUtils.h"
 #include "GameFramework/Character.h"
 #include "Weapon/MGBaseWeapon.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogMGWeaponComponent, All, All)
+
+
+DEFINE_LOG_CATEGORY(LogMGWeaponComponent)
+
+constexpr static int32 WeaponNum = 2;
 
 // Sets default values for this component's properties
 UMGWeaponComponent::UMGWeaponComponent()
@@ -51,6 +57,9 @@ void UMGWeaponComponent::StopFire()
 void UMGWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	checkf(WeaponData.Num() == WeaponNum, TEXT("CAN HOLD ONLY %i WEAPONS"), WeaponNum);
+	
 	InitAnimations();
 	SpawnWeapons();
 	EquipWeapon(CurrentWeaponIndex);
@@ -65,13 +74,14 @@ void UMGWeaponComponent::SpawnWeapons()
 		return;
 	}
 
-	for (auto WeaponClass : WeaponClasses)
+	for (auto OneWeaponData : WeaponData)
 	{
-		auto Weapon = GetWorld()->SpawnActor<AMGBaseWeapon>(WeaponClass);
+		auto Weapon = GetWorld()->SpawnActor<AMGBaseWeapon>(OneWeaponData.WeaponClass);
 		if (!Weapon)
 		{
 			continue;
 		}
+		Weapon->OnClipEmpty.AddUObject(this, &UMGWeaponComponent::OnEmptyClip);
 		Weapon->SetOwner(Character);
 		Weapons.Add(Weapon);
 
@@ -91,6 +101,11 @@ void UMGWeaponComponent::AttachWeaponToSocket(AMGBaseWeapon *Weapon, USceneCompo
 }
 void UMGWeaponComponent::EquipWeapon(int32 WeaponIndex)
 {
+	if (WeaponIndex < 0 || WeaponIndex >= Weapons.Num())
+	{
+		UE_LOG(LogMGWeaponComponent, Warning, TEXT("Invalid Weapon index"));
+		return;
+	}
 	ACharacter *Character = Cast<ACharacter>(GetOwner());
 	if (!Character)
 	{
@@ -102,13 +117,17 @@ void UMGWeaponComponent::EquipWeapon(int32 WeaponIndex)
 		StopFire();
 	}
 	CurrentWeapon = Weapons[WeaponIndex];
+	// CurrentReloadAnimMontage = WeaponData[WeaponIndex].ReloadAnimMontage;
+	const auto CurrentWeaponData = WeaponData.FindByPredicate(
+		[&](const FWeaponData &Data) { return Data.WeaponClass == CurrentWeapon->GetClass(); });
+	CurrentReloadAnimMontage = CurrentWeaponData ? CurrentWeaponData->ReloadAnimMontage : nullptr;
 	AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponEquipSocketName);
 	EquipAnimInProgress = true;
 	PlayAnimMontage(EquipAnimMontage);
 }
 void UMGWeaponComponent::NextWeapon()
 {
-	if (EquipAnimInProgress)
+	if (!CanEquip())
 	{
 		return;
 	}
@@ -128,22 +147,38 @@ void UMGWeaponComponent::PlayAnimMontage(UAnimMontage *Animation)
 
 void UMGWeaponComponent::InitAnimations()
 {
-	if (!EquipAnimMontage)
+
+	auto EquipFinishedNotify = AnimUtils::FindNotifyByClass<UMGEquipAnimNotify>(EquipAnimMontage);
+	if (EquipFinishedNotify)
+	{
+		EquipFinishedNotify->OnNotified.AddUObject(this, &UMGWeaponComponent::OnEquipFinished);
+	}
+	else
+	{
+		UE_LOG(LogMGWeaponComponent, Error, TEXT("Equip anim notify is forgotten to set"));
+		checkNoEntry();
+	}
+	for (auto OneWeaponData : WeaponData)
+	{
+		auto ReloadFinishedNotify = AnimUtils::FindNotifyByClass<UMGReloadAnimNotify>(OneWeaponData.ReloadAnimMontage);
+		if (!ReloadFinishedNotify)
+		{
+			UE_LOG(LogMGWeaponComponent, Error, TEXT("Reload anim notify is forgotten to set"));
+			checkNoEntry();
+		}
+
+		ReloadFinishedNotify->OnNotified.AddUObject(this, &UMGWeaponComponent::OnReloadFinished);
+	}
+}
+void UMGWeaponComponent::OnReloadFinished(USkeletalMeshComponent *MeshComponent)
+{
+	ACharacter *Character = Cast<ACharacter>(GetOwner());
+	if (!Character || Character->GetMesh() != MeshComponent)
 	{
 		return;
 	}
-	const auto NotifyEvents = EquipAnimMontage->Notifies;
-	for (auto NotifyEvent : NotifyEvents)
-	{
-		auto EquipFinishNotify = Cast<UMGAnimNotify>(NotifyEvent.Notify);
-		if (EquipFinishNotify)
-		{
-			EquipFinishNotify->OnNotified.AddUObject(this, &UMGWeaponComponent::OnEquipFinished);
-			break;
-		}
-	}
+	ReloadAnimInProgress = false;
 }
-
 void UMGWeaponComponent::OnEquipFinished(USkeletalMeshComponent *MeshComponent)
 {
 	ACharacter *Character = Cast<ACharacter>(GetOwner());
@@ -154,12 +189,42 @@ void UMGWeaponComponent::OnEquipFinished(USkeletalMeshComponent *MeshComponent)
 	EquipAnimInProgress = false;
 }
 
+void UMGWeaponComponent::Reload()
+{
+	ChangeClip();
+}
+
 bool UMGWeaponComponent::CanShoot() const
 {
-	return CurrentWeapon&&!EquipAnimInProgress;
+	return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress;
 }
 
 bool UMGWeaponComponent::CanEquip() const
 {
-	return !EquipAnimInProgress;
+	return !EquipAnimInProgress && !ReloadAnimInProgress;
+}
+
+bool UMGWeaponComponent::CanReload() const
+{
+	return CurrentWeapon			//
+		   && !EquipAnimInProgress	//
+		   && !ReloadAnimInProgress //
+		   && CurrentWeapon->CanReload();
+}
+
+void UMGWeaponComponent::OnEmptyClip()
+{
+	ChangeClip();
+}
+
+void UMGWeaponComponent::ChangeClip()
+{
+	if (!CanReload())
+	{
+		return;
+	}
+	CurrentWeapon->StopFire();
+	CurrentWeapon->ChangeClip();
+	ReloadAnimInProgress = true;
+	PlayAnimMontage(CurrentReloadAnimMontage);
 }

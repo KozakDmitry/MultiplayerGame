@@ -4,11 +4,11 @@
 
 #include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
+#include "MGCoreTypes.h"
 #include "MGHealthComponent.generated.h"
 
 
-DECLARE_MULTICAST_DELEGATE(FOnDeath)
-DECLARE_MULTICAST_DELEGATE_OneParam(ForHealthChange,float)
+
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class MULTIPLAYERGAME_API UMGHealthComponent : public UActorComponent

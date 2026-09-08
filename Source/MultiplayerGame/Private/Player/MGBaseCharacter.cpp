@@ -106,6 +106,8 @@ void AMGBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 		  &UMGWeaponComponent::StopFire);
 		EnhancedInputComponent->BindAction(NextWeaponAction, ETriggerEvent::Completed, WeaponComponent,
 										   &UMGWeaponComponent::NextWeapon);
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, WeaponComponent,
+										   &UMGWeaponComponent::Reload);
 	}
 
 	if (const APlayerController *PlayerController = Cast<APlayerController>(GetController()))

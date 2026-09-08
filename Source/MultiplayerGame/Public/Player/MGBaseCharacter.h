@@ -64,6 +64,8 @@ class MULTIPLAYERGAME_API AMGBaseCharacter : public ACharacter
 	TObjectPtr<UInputAction> FireAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> NextWeaponAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> ReloadAction;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

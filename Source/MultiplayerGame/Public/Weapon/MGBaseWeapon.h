@@ -4,22 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "MGCoreTypes.h"
 #include "MGBaseWeapon.generated.h"
+
 
 class USkeletalMeshComponent;
 
-USTRUCT(BlueprintType)
-struct FAmmoData
-{
-	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-	int32 Bullets;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon", meta = (EditCondition = "!Infinite"))
-	int32 Clips;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-	bool Infinite;
-};
 
 UCLASS()
 class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
@@ -29,8 +20,13 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
   public:
 	// Sets default values for this actor's properties
 	AMGBaseWeapon();
+
+	FOnClipEmptySignature OnClipEmpty;
 	virtual void StartFire();
 	virtual void StopFire();
+
+	void ChangeClip();
+	bool CanReload() const;
 
   protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -61,7 +57,6 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 	void DecreaseAmmo();
 	bool IsAmmoEmpty() const;
 	bool IsClipEmpty() const;
-	void ChangeClip();
 	void LogAmmo();
 
   private:

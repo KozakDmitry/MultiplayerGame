@@ -3,8 +3,8 @@
 #include "Weapon/MGBaseWeapon.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "DrawDebugHelpers.h"
-#include "Engine/World.h"
 #include "Engine/DamageEvents.h"
+#include "Engine/World.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
 #include "MGBaseCharacter.h"
@@ -21,22 +21,21 @@ AMGBaseWeapon::AMGBaseWeapon()
 }
 void AMGBaseWeapon::StartFire()
 {
-
 }
 void AMGBaseWeapon::StopFire()
 {
-
 }
 void AMGBaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	check(WeaponMesh);
+	checkf(DefaultAmmo.Bullets > 0, TEXT("Bullets count couldn't be<=0"));
+	checkf(DefaultAmmo.Clips > 0, TEXT("Clips count couldn't be<=0"));
 	CurrentAmmo = DefaultAmmo;
 }
 
 void AMGBaseWeapon::MakeShot()
 {
-	
 }
 
 void AMGBaseWeapon::MakeDamage(FHitResult HitResult)
@@ -107,31 +106,47 @@ void AMGBaseWeapon::MakeHit(FHitResult &HitResult, const FVector &TraceStart, co
 
 void AMGBaseWeapon::DecreaseAmmo()
 {
+	if (CurrentAmmo.Bullets == 0)
+	{
+		UE_LOG(BaseWeaponLog, Warning, TEXT("Clip is empty"));
+		return;
+	}
 	CurrentAmmo.Bullets--;
 	LogAmmo();
 	if (IsClipEmpty() && !IsAmmoEmpty())
 	{
-		ChangeClip();
+		StopFire();
+		OnClipEmpty.Broadcast();
 	}
 }
 
 bool AMGBaseWeapon::IsAmmoEmpty() const
 {
-	return CurrentAmmo.Clips==0 && IsClipEmpty() && !CurrentAmmo.Infinite;
+	return CurrentAmmo.Clips == 0 && IsClipEmpty() && !CurrentAmmo.Infinite;
 }
 
 bool AMGBaseWeapon::IsClipEmpty() const
 {
-	return CurrentAmmo.Bullets ==0;
+	return CurrentAmmo.Bullets == 0;
 }
 
 void AMGBaseWeapon::ChangeClip()
 {
-	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
 	if (!CurrentAmmo.Infinite)
 	{
+		if (CurrentAmmo.Clips == 0)
+		{
+			UE_LOG(BaseWeaponLog, Warning, TEXT("No more clips"));
+			return;
+		}
 		CurrentAmmo.Clips--;
 	}
+	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+}
+
+bool AMGBaseWeapon::CanReload() const
+{
+	return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0;
 }
 
 void AMGBaseWeapon::LogAmmo()

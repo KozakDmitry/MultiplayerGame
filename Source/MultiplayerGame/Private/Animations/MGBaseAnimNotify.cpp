@@ -1,9 +1,9 @@
 // Multiplayer Game
 
 
-#include "Animations/MGAnimNotify.h"
+#include "Animations/MGBaseAnimNotify.h"
 
-void UMGAnimNotify::Notify(USkeletalMeshComponent *MeshComp, UAnimSequenceBase *Animation,
+void UMGBaseAnimNotify::Notify(USkeletalMeshComponent *MeshComp, UAnimSequenceBase *Animation,
 						   const FAnimNotifyEventReference &EventReference)
 {
 

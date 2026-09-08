@@ -7,8 +7,8 @@
 
 void AMGRifleWeapon::StartFire()
 {
-	MakeShot();
 	GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &AMGRifleWeapon::MakeShot, TimeBetweenShots, true);
+	MakeShot();
 }
 void AMGRifleWeapon::StopFire()
 {
