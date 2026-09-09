@@ -2,10 +2,9 @@
 
 #include "UI/MGGameHUD.h"
 #include "Engine/Canvas.h"
-#include "Blueprint/UserWidget.h"
-#include "Kismet/GameplayStatics.h"
+#include "UI/MGPlayerHUDWidget.h"
 
-
+UE_DISABLE_OPTIMIZATION
 void AMGGameHUD::DrawHUD()
 {
 	Super::DrawHUD();
@@ -26,12 +25,23 @@ void AMGGameHUD::DrawCrosshair()
 
 void AMGGameHUD::DrawHP()
 {
-	if (PlayerHUD)
-	{
-		PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUD);
-	}
-	if (PlayerHUDWidget)
-	{
-		PlayerHUDWidget->AddToViewport();
-	}
+
+	//if (!PlayerHUDWidget)
+	//{
+	//	PlayerHUDWidget = CreateWidget<UMGPlayerHUDWidget>(GetWorld(), PlayerHUD);
+	//}
+	//if (PlayerHUDWidget)
+	//{
+	//	PlayerHUDWidget->AddToViewport();
+	//}
 }
+void AMGGameHUD::SetPlayerWidget(UMGPlayerHUDWidget *widget)
+{
+	if (!widget)
+	{
+		return;
+	}
+	PlayerHUDWidget = widget;
+	
+}
+UE_ENABLE_OPTIMIZATION

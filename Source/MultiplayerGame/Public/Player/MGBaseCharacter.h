@@ -17,6 +17,7 @@ class UMGHealthComponent;
 class UTextRenderComponent;
 class USpringArmComponent;
 class UMGWeaponComponent;
+class UMGPlayerHUDWidget;
 UCLASS()
 class MULTIPLAYERGAME_API AMGBaseCharacter : public ACharacter
 {
@@ -86,6 +87,7 @@ class MULTIPLAYERGAME_API AMGBaseCharacter : public ACharacter
 	bool IsMovingForward;
 	void Move(const FInputActionValue &Value);
 	void LookAround(const FInputActionValue &Value);
+
 
 	UFUNCTION()
 	void OnGroundLanded(const FHitResult &Hit);

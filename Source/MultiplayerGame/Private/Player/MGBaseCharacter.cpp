@@ -16,6 +16,9 @@
 #include "GameFramework/Controller.h"
 #include "InputActionValue.h"
 
+#include "UI/MGGameHUD.h"
+#include "UI/MGPlayerHUDWidget.h"
+
 DEFINE_LOG_CATEGORY_STATIC(AMGBaseCharacterLog, All, All)
 
 // Sets default values
@@ -57,7 +60,10 @@ void AMGBaseCharacter::BeginPlay()
 
 	LandedDelegate.AddDynamic(this, &AMGBaseCharacter::OnGroundLanded);
 
+
+
 }
+
 
 bool AMGBaseCharacter::IsRunning() const
 {
@@ -178,6 +184,7 @@ void AMGBaseCharacter::OnHealthChanged(float Health)
 {
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
+
 
 
 

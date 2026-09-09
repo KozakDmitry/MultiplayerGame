@@ -10,7 +10,7 @@ public class MultiplayerGame : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { });
+        PrivateDependencyModuleNames.AddRange(new string[] { "UMG" });
 
         PublicIncludePaths.AddRange(new string[] { "MultiplayerGame/Public/Player",
                                                    "MultiplayerGame/Public/Components",

@@ -11,7 +11,7 @@
  */
 
 
-class UUserWidget;
+class UMGPlayerHUDWidget;
 
 UCLASS()
 class MULTIPLAYERGAME_API AMGGameHUD : public AHUD
@@ -20,13 +20,15 @@ class MULTIPLAYERGAME_API AMGGameHUD : public AHUD
   public:
 	virtual void DrawHUD() override;
 
-  protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UUserWidget> PlayerHUD;
+	void DrawHP();
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void SetPlayerWidget(UMGPlayerHUDWidget *widget);
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	UMGPlayerHUDWidget *GetPlayerHUDWidget() const { return PlayerHUDWidget; }
+
 
   private:
-	
 	UPROPERTY()
-	UUserWidget *PlayerHUDWidget;
+	UMGPlayerHUDWidget *PlayerHUDWidget;
 	void DrawCrosshair();
 };
