@@ -2,10 +2,6 @@
 
 #include "UI/MGGameHUD.h"
 #include "Engine/Canvas.h"
-#include "Blueprint/UserWidget.h"
-#include "Kismet/GameplayStatics.h"
-
-
 void AMGGameHUD::DrawHUD()
 {
 	Super::DrawHUD();
@@ -22,16 +18,4 @@ void AMGGameHUD::DrawCrosshair()
 
 	DrawLine(Center.Min - HalfLineSize, Center.Max, Center.Min + HalfLineSize, Center.Max, LineColor, LineThickness);
 	DrawLine(Center.Min, Center.Max - HalfLineSize, Center.Min, Center.Max + HalfLineSize, LineColor, LineThickness);
-}
-
-void AMGGameHUD::DrawHP()
-{
-	if (PlayerHUD)
-	{
-		PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUD);
-	}
-	if (PlayerHUDWidget)
-	{
-		PlayerHUDWidget->AddToViewport();
-	}
 }

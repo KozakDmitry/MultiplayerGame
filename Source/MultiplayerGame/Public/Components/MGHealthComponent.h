@@ -7,9 +7,6 @@
 #include "MGCoreTypes.h"
 #include "MGHealthComponent.generated.h"
 
-
-
-
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class MULTIPLAYERGAME_API UMGHealthComponent : public UActorComponent
 {
@@ -22,15 +19,18 @@ class MULTIPLAYERGAME_API UMGHealthComponent : public UActorComponent
 		return Health;
 	}
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Health")
 	bool IsDead() const
 	{
 		return FMath::IsNearlyEqual(Health, 0);
 	}
-
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetHealthPersent() const
+	{
+		return Health / MaxHealth;
+	}
 	FOnDeath OnDeath;
 	ForHealthChange OnHealthChange;
-
 
   protected:
 	virtual void BeginPlay() override;
@@ -55,12 +55,11 @@ class MULTIPLAYERGAME_API UMGHealthComponent : public UActorComponent
 	float Health = 0;
 
 	FTimerHandle RegenerationTimerHandle;
-	
+
 	UFUNCTION()
 	void OnTakeAnyDamageHandle(AActor *OnTakeDamage, float Damage, const class UDamageType *DamageType,
 							   class AController *InstigatedBy, AActor *DamageCauser);
 
 	void HealUpdate();
 	void SetHealth(float newHealth);
-
 };
