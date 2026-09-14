@@ -6,7 +6,6 @@ DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature)
 
 DECLARE_MULTICAST_DELEGATE(FOnDeath)
 DECLARE_MULTICAST_DELEGATE_OneParam(ForHealthChange, float)
-DECLARE_MULTICAST_DELEGATE_OneParam(ForWeaponChange, int32)
 
 class AMGBaseWeapon;
 class UAnimMontage;

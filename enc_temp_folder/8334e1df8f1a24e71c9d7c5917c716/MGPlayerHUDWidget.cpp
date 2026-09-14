@@ -14,10 +14,6 @@ void UMGPlayerHUDWidget::UpdateHealth(float HealthPercent)
 		HealthProgressBar->SetPercent(HealthPercent);
 	}
 }
-void UMGPlayerHUDWidget::UpdateWeapon(int32 Index)
-{
-	
-}
 
 bool UMGPlayerHUDWidget::GetWeaponUIData(FWeaponUIData &UIData) const
 {
@@ -45,32 +41,14 @@ void UMGPlayerHUDWidget::NativeConstruct()
 			HealthComponentRef->OnHealthChange.AddUObject(this, &UMGPlayerHUDWidget::OnHealthChanged);
 			UpdateHealth(HealthComponentRef->GetHealthPersent());
 		}
-		WeaponComponentRef = Pawn->FindComponentByClass<UMGWeaponComponent>();
-		if (WeaponComponentRef)
-		{
-			WeaponComponentRef->OnWeaponChange.AddUObject(this, &UMGPlayerHUDWidget::OnWeaponChanged);
-			UpdateWeapon(WeaponComponentRef->GetCurrentWeapon());
-		}
 	}
 }
-
-
 
 void UMGPlayerHUDWidget::OnHealthChanged(float Health)
 {
 	if (HealthComponentRef)
 	{
 		UpdateHealth(HealthComponentRef->GetHealthPersent());
-	}
-}
-
-void UMGPlayerHUDWidget::OnWeaponChanged(int32 Weapon)
-{
-	if (WeaponComponentRef)
-	{
-		FWeaponUIData WeaponData;
-		WeaponComponentRef->GetWeaponUIData(WeaponData);
-		UpdateWeapon(Weapon);
 	}
 }
 

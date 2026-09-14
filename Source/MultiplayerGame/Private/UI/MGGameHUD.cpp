@@ -8,7 +8,7 @@ UE_DISABLE_OPTIMIZATION
 void AMGGameHUD::DrawHUD()
 {
 	Super::DrawHUD();
-	DrawCrosshair();
+	//DrawCrosshair();
 }
 
 void AMGGameHUD::DrawCrosshair()

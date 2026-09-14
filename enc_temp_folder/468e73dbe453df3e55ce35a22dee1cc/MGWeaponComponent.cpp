@@ -122,7 +122,6 @@ void UMGWeaponComponent::EquipWeapon(int32 WeaponIndex)
 	AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponEquipSocketName);
 	EquipAnimInProgress = true;
 	PlayAnimMontage(EquipAnimMontage);
-	OnWeaponChange.Broadcast(WeaponIndex);
 }
 void UMGWeaponComponent::NextWeapon()
 {
@@ -191,11 +190,6 @@ void UMGWeaponComponent::OnEquipFinished(USkeletalMeshComponent *MeshComponent)
 void UMGWeaponComponent::Reload()
 {
 	ChangeClip();
-}
-
-int32 UMGWeaponComponent::GetCurrentWeapon() const
-{
-	return CurrentWeaponIndex;
 }
 
 bool UMGWeaponComponent::GetWeaponUIData(FWeaponUIData &UIData) const

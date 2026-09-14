@@ -8,7 +8,6 @@
 #include "MGPlayerHUDWidget.generated.h"
 
 class UMGHealthComponent;
-class UMGWeaponComponent;
 class UProgressBar;
 
 UCLASS()
@@ -28,11 +27,7 @@ class MULTIPLAYERGAME_API UMGPlayerHUDWidget : public UUserWidget
 	UProgressBar *HealthProgressBar;
 
   private:
-	void UpdateWeapon(int32 Index);
 	UPROPERTY()
 	UMGHealthComponent *HealthComponentRef;
-	UPROPERTY()
-	UMGWeaponComponent *WeaponComponentRef;
 	void OnHealthChanged(float Health);
-	void OnWeaponChanged(int32 Weapon);
 };

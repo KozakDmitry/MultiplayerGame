@@ -7,10 +7,7 @@
 #include "MGCoreTypes.h"
 #include "MGBaseWeapon.generated.h"
 
-
 class USkeletalMeshComponent;
-
-
 
 UCLASS()
 class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
@@ -27,6 +24,10 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 
 	void ChangeClip();
 	bool CanReload() const;
+	FWeaponUIData GetUIData()
+	{
+		return UIData;
+	}
 
   protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -37,6 +38,9 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 	float TraceMaxDistance = 1500;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	FAmmoData DefaultAmmo{15, 10, false};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+	FWeaponUIData UIData;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	float Damage = 2.0f;
@@ -53,7 +57,7 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 	bool GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const;
 	FVector GetMuzzleWorldLocation() const;
 	void MakeHit(FHitResult &HitResult, const FVector &TraceStart, const FVector &TraceEnd);
-	
+
 	void DecreaseAmmo();
 	bool IsAmmoEmpty() const;
 	bool IsClipEmpty() const;
@@ -61,5 +65,4 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 
   private:
 	FAmmoData CurrentAmmo;
-
 };

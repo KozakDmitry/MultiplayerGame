@@ -27,11 +27,8 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 	void NextWeapon();
 	void Reload();
 
-
-	int32 GetCurrentWeapon() const;
 	bool GetWeaponUIData(FWeaponUIData &UIData) const;
 
-	ForWeaponChange OnWeaponChange;
   protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TArray<FWeaponData> WeaponData;
