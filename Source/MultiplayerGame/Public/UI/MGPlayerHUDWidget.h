@@ -10,6 +10,7 @@
 class UMGHealthComponent;
 class UMGWeaponComponent;
 class UProgressBar;
+class UImage;
 
 UCLASS()
 class MULTIPLAYERGAME_API UMGPlayerHUDWidget : public UUserWidget
@@ -26,6 +27,8 @@ class MULTIPLAYERGAME_API UMGPlayerHUDWidget : public UUserWidget
 	virtual void NativeConstruct() override;
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar *HealthProgressBar;
+	UPROPERTY(meta = (BindWidget))
+	UImage *CrossHairImage;
 
   private:
 	void UpdateWeapon(int32 Index);

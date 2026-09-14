@@ -2,6 +2,7 @@
 
 #include "UI/MGPlayerHUDWidget.h"
 #include "Components/ProgressBar.h"
+#include "Components/Image.h"
 #include "Components/MGHealthComponent.h"
 #include "Components/MGWeaponComponent.h"
 #include "GameFramework/Pawn.h"
@@ -16,7 +17,14 @@ void UMGPlayerHUDWidget::UpdateHealth(float HealthPercent)
 }
 void UMGPlayerHUDWidget::UpdateWeapon(int32 Index)
 {
-	
+	FWeaponUIData WeaponData;
+	if (WeaponComponentRef->GetWeaponUIData(WeaponData))
+	{
+		if (CrossHairImage && WeaponData.CrossHairIcon)
+		{
+			CrossHairImage->SetBrushFromTexture(WeaponData.CrossHairIcon);
+		}
+	}
 }
 
 bool UMGPlayerHUDWidget::GetWeaponUIData(FWeaponUIData &UIData) const
@@ -68,8 +76,6 @@ void UMGPlayerHUDWidget::OnWeaponChanged(int32 Weapon)
 {
 	if (WeaponComponentRef)
 	{
-		FWeaponUIData WeaponData;
-		WeaponComponentRef->GetWeaponUIData(WeaponData);
 		UpdateWeapon(Weapon);
 	}
 }
