@@ -113,6 +113,7 @@ void AMGBaseWeapon::DecreaseAmmo()
 	}
 	CurrentAmmo.Bullets--;
 	LogAmmo();
+	OnShot.Broadcast();
 	if (IsClipEmpty() && !IsAmmoEmpty())
 	{
 		StopFire();

@@ -19,14 +19,19 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 	AMGBaseWeapon();
 
 	FOnClipEmptySignature OnClipEmpty;
+	FOnShot OnShot;
 	virtual void StartFire();
 	virtual void StopFire();
 
 	void ChangeClip();
 	bool CanReload() const;
-	FWeaponUIData GetUIData()
+	FWeaponUIData GetUIData() const
 	{
 		return UIData;
+	}
+	FAmmoData GetAmmoData() const 
+	{
+		return CurrentAmmo;
 	}
 
   protected:

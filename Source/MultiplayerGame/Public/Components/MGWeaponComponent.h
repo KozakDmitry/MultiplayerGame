@@ -30,8 +30,10 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 
 	int32 GetCurrentWeapon() const;
 	bool GetWeaponUIData(FWeaponUIData &UIData) const;
+	bool GetWeaponAmmoData(FAmmoData &AmmoData) const;
 
 	ForWeaponChange OnWeaponChange;
+	ForWeaponShoot OnWeaponShoot;
   protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TArray<FWeaponData> WeaponData;
@@ -71,6 +73,7 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 	bool CanEquip() const;
 	bool CanReload() const;
 
+	void OnWeaponShot();
 	void OnEmptyClip();
 	void ChangeClip();
 

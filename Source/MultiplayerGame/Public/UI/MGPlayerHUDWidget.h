@@ -11,6 +11,8 @@ class UMGHealthComponent;
 class UMGWeaponComponent;
 class UProgressBar;
 class UImage;
+class UWidget;
+class UTextBlock;
 
 UCLASS()
 class MULTIPLAYERGAME_API UMGPlayerHUDWidget : public UUserWidget
@@ -22,6 +24,15 @@ class MULTIPLAYERGAME_API UMGPlayerHUDWidget : public UUserWidget
 	void UpdateHealth(float HealthPercent);
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	bool GetWeaponUIData(FWeaponUIData &UIData) const;
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	bool GetWeaponAmmoData(FAmmoData &AmmoData) const;
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	bool IsPlayerAlive() const;
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	bool IsPlayerSpectating() const;
+
+	template <typename T> T *GetComponent() const;
+
 
   protected:
 	virtual void NativeConstruct() override;
@@ -29,13 +40,24 @@ class MULTIPLAYERGAME_API UMGPlayerHUDWidget : public UUserWidget
 	UProgressBar *HealthProgressBar;
 	UPROPERTY(meta = (BindWidget))
 	UImage *CrossHairImage;
+	UPROPERTY(meta = (BindWidget))
+	UImage *WeaponImage;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock *AmmoTextBlock;
+	UPROPERTY(meta = (BindWidget))
+	UWidget *SpectatorHUDWidget;
 
   private:
 	void UpdateWeapon(int32 Index);
+	void UpdateAmmo();
 	UPROPERTY()
 	UMGHealthComponent *HealthComponentRef;
 	UPROPERTY()
 	UMGWeaponComponent *WeaponComponentRef;
 	void OnHealthChanged(float Health);
 	void OnWeaponChanged(int32 Weapon);
+	void OnWeaponShot(int32 Weapon);
+	void OnPlayerDeath();
+
+
 };

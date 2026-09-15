@@ -80,6 +80,7 @@ void UMGWeaponComponent::SpawnWeapons()
 			continue;
 		}
 		Weapon->OnClipEmpty.AddUObject(this, &UMGWeaponComponent::OnEmptyClip);
+		Weapon->OnShot.AddUObject(this, &UMGWeaponComponent::OnWeaponShot);
 		Weapon->SetOwner(Character);
 		Weapons.Add(Weapon);
 
@@ -212,6 +213,20 @@ bool UMGWeaponComponent::GetWeaponUIData(FWeaponUIData &UIData) const
 	}
 }
 
+bool UMGWeaponComponent::GetWeaponAmmoData(FAmmoData &AmmoData) const
+{
+	if (CurrentWeapon)
+	{
+		AmmoData = CurrentWeapon->GetAmmoData();
+		return true;
+	}
+	else
+	{
+
+		return false;
+	}
+}
+
 bool UMGWeaponComponent::CanShoot() const
 {
 	return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress;
@@ -228,6 +243,11 @@ bool UMGWeaponComponent::CanReload() const
 		   && !EquipAnimInProgress	//
 		   && !ReloadAnimInProgress //
 		   && CurrentWeapon->CanReload();
+}
+
+void UMGWeaponComponent::OnWeaponShot()
+{
+	OnWeaponShoot.Broadcast(CurrentWeaponIndex);
 }
 
 void UMGWeaponComponent::OnEmptyClip()
