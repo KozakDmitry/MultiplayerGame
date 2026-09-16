@@ -23,6 +23,8 @@ class MULTIPLAYERGAME_API AMGBasePickUp : public AActor
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
 	float RespawnTime = 5.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Pickup", meta = (ClampMin = "0"))
+	float RotationYawSpeed = 90.0f;
 	virtual void BeginPlay() override;
 	virtual void NotifyActorBeginOverlap(AActor *OtherActor) override;
 
@@ -34,4 +36,5 @@ class MULTIPLAYERGAME_API AMGBasePickUp : public AActor
 	virtual bool GivePickUpTo(APawn *PlayerPawn);
 	void PickupWasTaken();
 	void Respawn();
+	void GenerateRotationYaw();
 };

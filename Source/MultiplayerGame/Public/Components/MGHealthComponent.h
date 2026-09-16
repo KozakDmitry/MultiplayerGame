@@ -29,6 +29,8 @@ class MULTIPLAYERGAME_API UMGHealthComponent : public UActorComponent
 	{
 		return Health / MaxHealth;
 	}
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	bool TryToHeal(float Amount);
 	FOnDeath OnDeath;
 	ForHealthChange OnHealthChange;
 

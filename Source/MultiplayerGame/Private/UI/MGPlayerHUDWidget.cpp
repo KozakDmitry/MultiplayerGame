@@ -98,6 +98,7 @@ void UMGPlayerHUDWidget::NativeConstruct()
 	{
 		WeaponComponentRef->OnWeaponChange.AddUObject(this, &UMGPlayerHUDWidget::OnWeaponChanged);
 		WeaponComponentRef->OnWeaponShoot.AddUObject(this, &UMGPlayerHUDWidget::OnWeaponShot);
+		WeaponComponentRef->OnAmmoChanged.AddUObject(this, &UMGPlayerHUDWidget::UpdateAmmo);
 		UpdateWeapon(WeaponComponentRef->GetCurrentWeapon());
 		UpdateAmmo();
 	}

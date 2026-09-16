@@ -16,7 +16,7 @@ bool AMGAmmoPickUp::GivePickUpTo(APawn *PlayerPawn)
 	}
 
 	const auto Weapon = MGUtils::GetComponent<UMGWeaponComponent>(PlayerPawn);
-	if (!Weapon)
+if (!Weapon)
 	{
 		return false;
 	}

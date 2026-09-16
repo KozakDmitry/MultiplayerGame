@@ -64,6 +64,16 @@ void UMGHealthComponent::SetHealth(float newHealth)
 	OnHealthChange.Broadcast(Health);
 }
 
+bool UMGHealthComponent::TryToHeal(float Amount)
+{
+	if (IsDead() || FMath::IsNearlyEqual(Health, MaxHealth) || Amount <= 0.0f)
+	{
+		return false;
+	}
+	SetHealth(Health + Amount);
+	return true;
+}
+
 
 
 // Called every frame

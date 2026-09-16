@@ -2,15 +2,16 @@
 
 #include "MGCoreTypes.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature)
+class AMGBaseWeapon;
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature, AMGBaseWeapon*)
 DECLARE_MULTICAST_DELEGATE(FOnShot)
 
 DECLARE_MULTICAST_DELEGATE(FOnDeath)
 DECLARE_MULTICAST_DELEGATE_OneParam(ForHealthChange, float)
 DECLARE_MULTICAST_DELEGATE_OneParam(ForWeaponChange, int32)
 DECLARE_MULTICAST_DELEGATE_OneParam(ForWeaponShoot, int32)
+DECLARE_MULTICAST_DELEGATE(ForAmmoChange)
 
-class AMGBaseWeapon;
 class UAnimMontage;
 class UTexture2D;
 

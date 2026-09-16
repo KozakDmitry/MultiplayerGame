@@ -38,6 +38,7 @@ void AMGBasePickUp::NotifyActorBeginOverlap(AActor *OtherActor)
 void AMGBasePickUp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	AddActorLocalRotation(FRotator(0.0f, RotationYawSpeed * DeltaTime, 0.0f));
 }
 
 bool AMGBasePickUp::GivePickUpTo(APawn *PlayerPawn)
@@ -63,4 +64,11 @@ void AMGBasePickUp::Respawn()
 	{
 		GetRootComponent()->SetVisibility(true, true);
 	}
+	GenerateRotationYaw();
+}
+
+void AMGBasePickUp::GenerateRotationYaw()
+{
+	const FRotator RandomRotation(0.0f, FMath::RandRange(0.0f, 360.0f), 0.0f);
+	SetActorRotation(RandomRotation);
 }

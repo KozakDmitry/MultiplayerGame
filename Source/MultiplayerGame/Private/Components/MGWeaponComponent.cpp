@@ -250,9 +250,22 @@ void UMGWeaponComponent::OnWeaponShot()
 	OnWeaponShoot.Broadcast(CurrentWeaponIndex);
 }
 
-void UMGWeaponComponent::OnEmptyClip()
+void UMGWeaponComponent::OnEmptyClip(AMGBaseWeapon *Weapon)
 {
-	ChangeClip();
+	if (CurrentWeapon == Weapon)
+	{
+		ChangeClip();
+	}
+	else
+	{
+		for (const auto Weap : Weapons)
+		{
+			if (Weap == Weapon)
+			{
+				Weapon->ChangeClip();
+			}
+		}
+	}
 }
 
 void UMGWeaponComponent::ChangeClip()
@@ -263,6 +276,7 @@ void UMGWeaponComponent::ChangeClip()
 	}
 	CurrentWeapon->StopFire();
 	CurrentWeapon->ChangeClip();
+	OnAmmoChanged.Broadcast();
 	ReloadAnimInProgress = true;
 	PlayAnimMontage(CurrentReloadAnimMontage);
 }
@@ -273,7 +287,12 @@ bool UMGWeaponComponent::TryToAddAmmo(TSubclassOf<AMGBaseWeapon> WeaponType, int
 	{
 		if (Weapon && Weapon->IsA(WeaponType))
 		{
-			return Weapon->TryToAddAmmo(ClipsAmount);
+			const bool bAdded = Weapon->TryToAddAmmo(ClipsAmount);
+			if (bAdded)
+			{
+				OnAmmoChanged.Broadcast();
+			}
+			return bAdded;
 		}
 	}
 	return false;

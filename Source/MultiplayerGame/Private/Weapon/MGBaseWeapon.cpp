@@ -117,7 +117,7 @@ void AMGBaseWeapon::DecreaseAmmo()
 	if (IsClipEmpty() && !IsAmmoEmpty())
 	{
 		StopFire();
-		OnClipEmpty.Broadcast();
+		OnClipEmpty.Broadcast(this);
 	}
 }
 
@@ -165,7 +165,7 @@ bool AMGBaseWeapon::TryToAddAmmo(int32 ClipsAmount)
 	if (IsAmmoEmpty())
 	{
 		CurrentAmmo.Clips = FMath::Clamp(ClipsAmount, 0, DefaultAmmo.Clips + 1);
-		OnClipEmpty.Broadcast();
+		OnClipEmpty.Broadcast(this);
 	}
 	else if (CurrentAmmo.Clips < DefaultAmmo.Clips)
 	{
