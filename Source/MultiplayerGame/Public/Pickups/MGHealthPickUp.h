@@ -7,11 +7,13 @@
 #include "MGHealthPickUp.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class MULTIPLAYERGAME_API AMGHealthPickUp : public AMGBasePickUp
 {
 	GENERATED_BODY()
-	
+
+  private:
+	virtual bool GivePickUpTo(APawn *PlayerPawn) override;
 };

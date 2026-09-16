@@ -1,6 +1,5 @@
 // Multiplayer Game
 
-
 #include "Pickups/MGBasePickUp.h"
 #include "Components/SphereComponent.h"
 
@@ -16,29 +15,52 @@ AMGBasePickUp::AMGBasePickUp()
 	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	SetRootComponent(CollisionComponent);
 
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 }
 
 // Called when the game starts or when spawned
 void AMGBasePickUp::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AMGBasePickUp::NotifyActorBeginOverlap(AActor *OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
-
-	UE_LOG(LogBasePickUp, Display, TEXT("Pickup was taken"));
-	Destroy();
+	const auto Pawn = Cast<APawn>(OtherActor);
+	if (GivePickUpTo(Pawn))
+	{
+		PickupWasTaken();
+	}
 }
 
 // Called every frame
 void AMGBasePickUp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
+bool AMGBasePickUp::GivePickUpTo(APawn *PlayerPawn)
+{
+	return false;
+}
+
+void AMGBasePickUp::PickupWasTaken()
+{
+	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	if (GetRootComponent())
+	{
+		GetRootComponent()->SetVisibility(false, true);
+	}
+	FTimerHandle RespawnTimerHandle;
+	GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &AMGBasePickUp::Respawn, RespawnTime);
+}
+
+void AMGBasePickUp::Respawn()
+{
+	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+	if (GetRootComponent())
+	{
+		GetRootComponent()->SetVisibility(true, true);
+	}
+}

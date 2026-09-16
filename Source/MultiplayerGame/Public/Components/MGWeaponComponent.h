@@ -32,6 +32,11 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 	bool GetWeaponUIData(FWeaponUIData &UIData) const;
 	bool GetWeaponAmmoData(FAmmoData &AmmoData) const;
 
+
+	bool TryToAddAmmo(TSubclassOf<AMGBaseWeapon> WeaponType, int32 ClipsAmount);
+
+
+
 	ForWeaponChange OnWeaponChange;
 	ForWeaponShoot OnWeaponShoot;
   protected:
@@ -76,6 +81,7 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 	void OnWeaponShot();
 	void OnEmptyClip();
 	void ChangeClip();
+
 
 	
 };

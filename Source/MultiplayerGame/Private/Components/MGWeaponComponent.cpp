@@ -266,3 +266,15 @@ void UMGWeaponComponent::ChangeClip()
 	ReloadAnimInProgress = true;
 	PlayAnimMontage(CurrentReloadAnimMontage);
 }
+
+bool UMGWeaponComponent::TryToAddAmmo(TSubclassOf<AMGBaseWeapon> WeaponType, int32 ClipsAmount)
+{
+	for (const auto Weapon : Weapons)
+	{
+		if (Weapon && Weapon->IsA(WeaponType))
+		{
+			return Weapon->TryToAddAmmo(ClipsAmount);
+		}
+	}
+	return false;
+}

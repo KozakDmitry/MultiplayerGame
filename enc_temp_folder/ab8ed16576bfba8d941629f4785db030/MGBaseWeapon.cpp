@@ -133,7 +133,7 @@ bool AMGBaseWeapon::IsClipEmpty() const
 
 bool AMGBaseWeapon::IsAmmoFull() const
 {
-	return CurrentAmmo.Clips == DefaultAmmo.Clips && CurrentAmmo.Bullets == DefaultAmmo.Bullets;
+	return CurrentAmmo.Clips == DefaultAmmo.Clips && CurrentAmmo.Bullets == CurrentAmmo.Bullets;
 }
 
 void AMGBaseWeapon::ChangeClip()
@@ -148,7 +148,6 @@ void AMGBaseWeapon::ChangeClip()
 		CurrentAmmo.Clips--;
 	}
 	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
-	
 }
 
 bool AMGBaseWeapon::CanReload() const

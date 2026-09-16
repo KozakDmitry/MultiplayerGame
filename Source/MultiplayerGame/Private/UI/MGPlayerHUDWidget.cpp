@@ -7,6 +7,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/Pawn.h"
+#include "MGUtils.h"
 
 void UMGPlayerHUDWidget::UpdateHealth(float HealthPercent)
 {
@@ -33,7 +34,7 @@ void UMGPlayerHUDWidget::UpdateWeapon(int32 Index)
 
 bool UMGPlayerHUDWidget::GetWeaponUIData(FWeaponUIData &UIData) const
 {
-	const auto WeaponComponent = GetComponent<UMGWeaponComponent>();
+	const auto WeaponComponent = MGUtils::GetComponent<UMGWeaponComponent>(GetOwningPlayerPawn());
 
 	if (WeaponComponent)
 	{
@@ -81,20 +82,11 @@ void UMGPlayerHUDWidget::UpdateAmmo()
 	}
 }
 
-template <typename T> T *UMGPlayerHUDWidget::GetComponent() const
-{
-	const auto Player = GetOwningPlayerPawn();
-	if (!Player)
-		return nullptr;
-
-	const auto Component = Player->GetComponentByClass(T::StaticClass());
-	return Cast<T>(Component);
-}
 void UMGPlayerHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	WeaponComponentRef = GetComponent<UMGWeaponComponent>();
-	HealthComponentRef = GetComponent<UMGHealthComponent>();
+	WeaponComponentRef = MGUtils::GetComponent<UMGWeaponComponent>(GetOwningPlayerPawn());
+	HealthComponentRef = MGUtils::GetComponent<UMGHealthComponent>(GetOwningPlayerPawn());
 	if (HealthComponentRef)
 	{
 

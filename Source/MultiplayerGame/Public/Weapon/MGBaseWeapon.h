@@ -25,6 +25,7 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 
 	void ChangeClip();
 	bool CanReload() const;
+	bool TryToAddAmmo(int32 ClipsAmount);
 	FWeaponUIData GetUIData() const
 	{
 		return UIData;
@@ -66,6 +67,7 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 	void DecreaseAmmo();
 	bool IsAmmoEmpty() const;
 	bool IsClipEmpty() const;
+	bool IsAmmoFull() const;
 	void LogAmmo();
 
   private:

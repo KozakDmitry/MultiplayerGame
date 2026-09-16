@@ -31,8 +31,6 @@ class MULTIPLAYERGAME_API UMGPlayerHUDWidget : public UUserWidget
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	bool IsPlayerSpectating() const;
 
-	template <typename T> T *GetComponent() const;
-
 
   protected:
 	virtual void NativeConstruct() override;
