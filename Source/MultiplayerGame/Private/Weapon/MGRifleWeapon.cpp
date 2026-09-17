@@ -4,6 +4,12 @@
 #include "Weapon/MGRifleWeapon.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/World.h"
+#include "Weapon/Components/MGWeaponFXComponent.h"
+
+AMGRifleWeapon::AMGRifleWeapon()
+{
+	WeaponFXComponent = CreateDefaultSubobject<UMGWeaponFXComponent>("WeaponFXComponent");
+}
 
 void AMGRifleWeapon::StartFire()
 {
@@ -13,6 +19,13 @@ void AMGRifleWeapon::StartFire()
 void AMGRifleWeapon::StopFire()
 {
 	GetWorldTimerManager().ClearTimer(ShotTimerHandle);
+}
+
+void AMGRifleWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+
+	check(WeaponFXComponent);
 }
 
 void AMGRifleWeapon::MakeShot()
@@ -35,10 +48,11 @@ void AMGRifleWeapon::MakeShot()
 	if (HitResult.bBlockingHit)
 	{
 
-		DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
+		//DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
+		//DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
 		// UE_LOG(BaseWeaponLog, Display, TEXT("Bone: %s"), *HitResult.BoneName.ToString());
 		MakeDamage(HitResult);
+		WeaponFXComponent->PlayImpactFX(HitResult);
 	}
 	else
 	{

@@ -1,6 +1,7 @@
 // Multiplayer Game
 
 #include "Weapon/MGProjectile.h"
+#include "Weapon/Components/MGWeaponFXComponent.h"
 #include "Components/SphereComponent.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -20,13 +21,19 @@ AMGProjectile::AMGProjectile()
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
 	MovementComponent->InitialSpeed = 2000.0f;
 	MovementComponent->ProjectileGravityScale = 0.0f;
+
+	WeaponFXComponent = CreateDefaultSubobject<UMGWeaponFXComponent>("WeaponFXComponent");
 }
 
 // Called when the game starts or when spawned
 void AMGProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+
 	check(MovementComponent);
+	check(CollisionComponent);
+	check(WeaponFXComponent);
+
 	MovementComponent->Velocity = ShotDirection * MovementComponent->InitialSpeed;
 	CollisionComponent->IgnoreActorWhenMoving(GetOwner(), true);
 	CollisionComponent->OnComponentHit.AddDynamic(this, &AMGProjectile::OnProjectileHit);
@@ -52,6 +59,7 @@ void AMGProjectile::OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *O
 	);
 
 	DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24, FColor::Red, false, 5.0f);
+	WeaponFXComponent->PlayImpactFX(Hit);
 	Destroy();
 }
 

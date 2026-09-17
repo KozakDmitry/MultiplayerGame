@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class UMGWeaponFXComponent;
 
 UCLASS()
 class MULTIPLAYERGAME_API AMGProjectile : public AActor
@@ -28,6 +29,10 @@ class MULTIPLAYERGAME_API AMGProjectile : public AActor
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
 	UProjectileMovementComponent *MovementComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	UMGWeaponFXComponent *WeaponFXComponent;
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
 	float DamageRadius = 200.0f;
 	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
@@ -44,7 +49,7 @@ class MULTIPLAYERGAME_API AMGProjectile : public AActor
 	FVector ShotDirection;
 
 	UFUNCTION()
-	void OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, FVector NormalImpulse, const FHitResult &Hit);
+	void OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp,
+						 FVector NormalImpulse, const FHitResult &Hit);
 	AController *GetController() const;
-
 };
