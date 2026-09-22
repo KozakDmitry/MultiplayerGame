@@ -90,9 +90,9 @@ void UMGPlayerHUDWidget::NativeConstruct()
 	if (HealthComponentRef)
 	{
 
-			HealthComponentRef->OnHealthChange.AddUObject(this, &UMGPlayerHUDWidget::OnHealthChanged);
-			HealthComponentRef->OnDeath.AddUObject(this, &UMGPlayerHUDWidget::OnPlayerDeath);
-			UpdateHealth(HealthComponentRef->GetHealthPersent());
+		HealthComponentRef->OnHealthChange.AddDynamic(this, &UMGPlayerHUDWidget::OnHealthChanged);
+		HealthComponentRef->OnDeath.AddUObject(this, &UMGPlayerHUDWidget::OnPlayerDeath);
+		UpdateHealth(HealthComponentRef->GetHealthPersent());
 	}
 	if (WeaponComponentRef)
 	{
@@ -108,11 +108,15 @@ void UMGPlayerHUDWidget::NativeConstruct()
 	}
 }
 
-void UMGPlayerHUDWidget::OnHealthChanged(float Health)
+void UMGPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
 {
 	if (HealthComponentRef)
 	{
 		UpdateHealth(HealthComponentRef->GetHealthPersent());
+		if (HealthDelta<0)
+		{
+			OnTakeDamage();
+		}
 	}
 }
 
@@ -133,9 +137,14 @@ void UMGPlayerHUDWidget::OnWeaponShot(int32 Weapon)
 void UMGPlayerHUDWidget::OnPlayerDeath()
 {
 	const auto Collapsed = ESlateVisibility::Collapsed;
-	if (HealthProgressBar) HealthProgressBar->SetVisibility(Collapsed);
-	if (AmmoTextBlock) AmmoTextBlock->SetVisibility(Collapsed);
-	if (CrossHairImage) CrossHairImage->SetVisibility(Collapsed);
-	if (WeaponImage) WeaponImage->SetVisibility(Collapsed);
-	if (SpectatorHUDWidget) SpectatorHUDWidget->SetVisibility(ESlateVisibility::Visible);
+	if (HealthProgressBar)
+		HealthProgressBar->SetVisibility(Collapsed);
+	if (AmmoTextBlock)
+		AmmoTextBlock->SetVisibility(Collapsed);
+	if (CrossHairImage)
+		CrossHairImage->SetVisibility(Collapsed);
+	if (WeaponImage)
+		WeaponImage->SetVisibility(Collapsed);
+	if (SpectatorHUDWidget)
+		SpectatorHUDWidget->SetVisibility(ESlateVisibility::Visible);
 }

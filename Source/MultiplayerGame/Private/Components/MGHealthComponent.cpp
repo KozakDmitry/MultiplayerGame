@@ -46,6 +46,7 @@ void UMGHealthComponent::OnTakeAnyDamageHandle(AActor *OnTakeDamage, float Damag
 	{
 		GetWorld()->GetTimerManager().SetTimer(RegenerationTimerHandle, this, &UMGHealthComponent::HealUpdate, HealUpdateTime, true, RegenerationDelay);
 	}
+	PlayCameraShake();
 	// UE_LOG(MGHealthComponentLog, Display, TEXT("Damage: %f"), Damage);
 }
 
@@ -60,8 +61,29 @@ void UMGHealthComponent::HealUpdate()
 
 void UMGHealthComponent::SetHealth(float newHealth)
 {
+	const auto NextHealth = FMath::Clamp(newHealth, 0.0f, MaxHealth);
+	const auto HealthDelta = NextHealth - Health;
 	Health = FMath::Clamp(newHealth, 0.0f, MaxHealth);
-	OnHealthChange.Broadcast(Health);
+	OnHealthChange.Broadcast(Health, HealthDelta);
+}
+
+void UMGHealthComponent::PlayCameraShake()
+{
+	if (IsDead())
+	{
+		return;
+	}
+	const auto Player = Cast<APawn>(GetOwner());
+	if (!Player)
+	{
+		return;
+	}
+	const auto Controller = Player->GetController<APlayerController>();
+	if (!Controller|| !Controller ->PlayerCameraManager)
+	{
+		return;
+	}
+	Controller->PlayerCameraManager->StartCameraShake(CameraShake);
 }
 
 bool UMGHealthComponent::TryToHeal(float Amount)

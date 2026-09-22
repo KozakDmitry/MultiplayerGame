@@ -37,9 +37,9 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 
 
 
-	ForWeaponChange OnWeaponChange;
-	ForWeaponShoot OnWeaponShoot;
-	ForAmmoChange OnAmmoChanged;
+	FOnWeaponChange OnWeaponChange;
+	FOnWeaponShoot OnWeaponShoot;
+	FOnAmmoChange OnAmmoChanged;
   protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TArray<FWeaponData> WeaponData;

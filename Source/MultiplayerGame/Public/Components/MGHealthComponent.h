@@ -7,6 +7,8 @@
 #include "MGCoreTypes.h"
 #include "MGHealthComponent.generated.h"
 
+class UCameraShakeBase;
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class MULTIPLAYERGAME_API UMGHealthComponent : public UActorComponent
 {
@@ -32,7 +34,7 @@ class MULTIPLAYERGAME_API UMGHealthComponent : public UActorComponent
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	bool TryToHeal(float Amount);
 	FOnDeath OnDeath;
-	ForHealthChange OnHealthChange;
+	FOnHealthChange OnHealthChange;
 
   protected:
 	virtual void BeginPlay() override;
@@ -52,6 +54,8 @@ class MULTIPLAYERGAME_API UMGHealthComponent : public UActorComponent
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health",
 			  meta = (EditCondition = "AutoHeal", ClampMin = "0", ClampMax = "1000"))
 	float MaxHealth = 100;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	TSubclassOf<UCameraShakeBase> CameraShake;
 
   private:
 	float Health = 0;
@@ -64,4 +68,5 @@ class MULTIPLAYERGAME_API UMGHealthComponent : public UActorComponent
 
 	void HealUpdate();
 	void SetHealth(float newHealth);
+	void PlayCameraShake();
 };

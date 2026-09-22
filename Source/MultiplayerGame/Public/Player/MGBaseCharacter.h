@@ -96,7 +96,8 @@ class MULTIPLAYERGAME_API AMGBaseCharacter : public ACharacter
 	void SprintEnded();
 
 	void OnDeath();
-	void OnHealthChanged(float Health);
+	UFUNCTION()
+	void OnHealthChanged(float Health, float HealthDelta);
 
 
 };

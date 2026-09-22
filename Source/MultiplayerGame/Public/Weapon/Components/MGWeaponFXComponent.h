@@ -2,25 +2,28 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "CoreMinimal.h"
+#include "MGCoreTypes.h"
 #include "MGWeaponFXComponent.generated.h"
 
 class UNiagaraSystem;
+class UPhysicalMaterial;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class MULTIPLAYERGAME_API UMGWeaponFXComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+  public:
 	// Sets default values for this component's properties
 	UMGWeaponFXComponent();
 
 	void PlayImpactFX(const FHitResult &Hit);
 
-	protected:
+  protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
-	  UNiagaraSystem *Effect;
-		
+	FImpactData DefaultImpactData;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	TMap<UPhysicalMaterial *, FImpactData> ImpactDataMap;
 };

@@ -1,19 +1,43 @@
 // Multiplayer Game
 
 #include "Weapon/Components/MGWeaponFXComponent.h"
+#include "Components/DecalComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 // Sets default values for this component's properties
 UMGWeaponFXComponent::UMGWeaponFXComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these
-	// features off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-
-	// ...
 }
 
 void UMGWeaponFXComponent::PlayImpactFX(const FHitResult &Hit)
 {
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Effect, Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
+	auto ImpactData = DefaultImpactData;
+
+	if (Hit.PhysMaterial.IsValid())
+	{
+		const auto PhysMat = Hit.PhysMaterial.Get();
+		if (ImpactDataMap.Contains(PhysMat))
+		{
+			ImpactData = ImpactDataMap[PhysMat];
+		}
+	}
+	// Niagara
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),				 //
+												   ImpactData.NiagaraEffect, //
+												   Hit.ImpactPoint,			 //
+												   Hit.ImpactNormal.Rotation());
+
+	// Decal
+	auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(),					//
+																 ImpactData.DecalData.Material, //
+																 ImpactData.DecalData.Size,		//
+																 Hit.ImpactPoint,				//
+																 Hit.ImpactNormal.Rotation());
+	if (DecalComponent)
+	{
+		DecalComponent->SetFadeOut(ImpactData.DecalData.LifeTime, ImpactData.DecalData.FadeOutTime);
+	}
 }

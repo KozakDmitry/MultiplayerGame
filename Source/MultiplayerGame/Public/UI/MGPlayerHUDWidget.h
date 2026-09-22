@@ -30,6 +30,8 @@ class MULTIPLAYERGAME_API UMGPlayerHUDWidget : public UUserWidget
 	bool IsPlayerAlive() const;
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	bool IsPlayerSpectating() const;
+	UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+	void OnTakeDamage();
 
 
   protected:
@@ -52,10 +54,10 @@ class MULTIPLAYERGAME_API UMGPlayerHUDWidget : public UUserWidget
 	UMGHealthComponent *HealthComponentRef;
 	UPROPERTY()
 	UMGWeaponComponent *WeaponComponentRef;
-	void OnHealthChanged(float Health);
+	UFUNCTION()
+	void OnHealthChanged(float Health, float HealthDelta);
 	void OnWeaponChanged(int32 Weapon);
 	void OnWeaponShot(int32 Weapon);
 	void OnPlayerDeath();
-
 
 };

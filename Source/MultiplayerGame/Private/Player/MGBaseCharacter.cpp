@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "MGWeaponComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Camera/CameraShakeBase.h"
 
 #include "Engine/DamageEvents.h"
 #include "EnhancedInputComponent.h"
@@ -54,9 +55,10 @@ void AMGBaseCharacter::BeginPlay()
 	check(HealthComponent);
 	check(HealthTextComponent);
 	check(GetCharacterMovement());
-	OnHealthChanged(HealthComponent->GetHealth());
+	check(GetMesh());
+	OnHealthChanged(HealthComponent->GetHealth(), 0);
 	HealthComponent->OnDeath.AddUObject(this, &AMGBaseCharacter::OnDeath);
-	HealthComponent->OnHealthChange.AddUObject(this, &AMGBaseCharacter::OnHealthChanged);
+	HealthComponent->OnHealthChange.AddDynamic(this, &AMGBaseCharacter::OnHealthChanged);
 
 	LandedDelegate.AddDynamic(this, &AMGBaseCharacter::OnGroundLanded);
 
@@ -178,9 +180,11 @@ void AMGBaseCharacter::OnDeath()
 	}
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	WeaponComponent->StopFire();
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetSimulatePhysics(true);
 }
 
-void AMGBaseCharacter::OnHealthChanged(float Health)
+void AMGBaseCharacter::OnHealthChanged(float Health, float HealthDelta)
 {
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
