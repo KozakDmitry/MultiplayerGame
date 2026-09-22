@@ -8,6 +8,8 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
 #include "MGBaseCharacter.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseWeaponLog, All, All)
 UE_DISABLE_OPTIMIZATION
@@ -149,7 +151,6 @@ void AMGBaseWeapon::ChangeClip()
 		CurrentAmmo.Clips--;
 	}
 	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
-	
 }
 
 bool AMGBaseWeapon::CanReload() const
@@ -181,14 +182,12 @@ bool AMGBaseWeapon::TryToAddAmmo(int32 ClipsAmount)
 			CurrentAmmo.Clips = DefaultAmmo.Clips;
 			CurrentAmmo.Bullets = DefaultAmmo.Bullets;
 			UE_LOG(BaseWeaponLog, Display, TEXT("Ammo is full now"));
-
 		}
 	}
 	else
 	{
 		CurrentAmmo.Bullets = DefaultAmmo.Bullets;
 		UE_LOG(BaseWeaponLog, Display, TEXT("Bullets were added"));
-
 	}
 	return true;
 }
@@ -198,6 +197,16 @@ void AMGBaseWeapon::LogAmmo()
 	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " / ";
 	AmmoInfo += CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
 	UE_LOG(BaseWeaponLog, Display, TEXT("%s"), *AmmoInfo);
+}
+
+UNiagaraComponent *AMGBaseWeapon::SpawnMuzzleFX()
+{
+	return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX,				//
+												 WeaponMesh,			//
+												 MuzzleSocketName,		//
+												 FVector::ZeroVector,	//
+												 FRotator::ZeroRotator, //
+												 EAttachLocation::SnapToTarget, true);
 }
 
 UE_ENABLE_OPTIMIZATION

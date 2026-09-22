@@ -7,6 +7,8 @@
 #include "MGRifleWeapon.generated.h"
 
 class UMGWeaponFXComponent;
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 UCLASS()
 class MULTIPLAYERGAME_API AMGRifleWeapon : public AMGBaseWeapon
@@ -26,6 +28,10 @@ class MULTIPLAYERGAME_API AMGRifleWeapon : public AMGBaseWeapon
 	float BulletSpread = 1.5f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 	UMGWeaponFXComponent *WeaponFXComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	UNiagaraSystem *TraceFX;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	FString TraceTargetName = "TraceTarget";
 	virtual void BeginPlay() override;
 	virtual void MakeShot() override;
 	virtual bool GetTraceData(FVector &TraceStart, FVector &TraceEnd) const override;
@@ -33,4 +39,10 @@ class MULTIPLAYERGAME_API AMGRifleWeapon : public AMGBaseWeapon
 
   private:
 	FTimerHandle ShotTimerHandle;
+	UPROPERTY()
+	UNiagaraComponent *MuzzleFXComponent;
+
+	void InitMuzzleFX();
+	void SetMuzzleFXVisibility(bool Visible);
+	void SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd);
 };

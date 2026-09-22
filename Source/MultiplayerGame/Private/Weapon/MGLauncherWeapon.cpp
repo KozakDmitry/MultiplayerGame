@@ -38,5 +38,6 @@ void AMGLauncherWeapon::MakeShot()
 	}
 	//Set params to Do
 	DecreaseAmmo();
+	SpawnMuzzleFX();
 }
 

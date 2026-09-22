@@ -8,6 +8,8 @@
 #include "MGBaseWeapon.generated.h"
 
 class USkeletalMeshComponent;
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 UCLASS()
 class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
@@ -50,6 +52,8 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	float Damage = 2.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	UNiagaraSystem *MuzzleFX;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -69,6 +73,8 @@ class MULTIPLAYERGAME_API AMGBaseWeapon : public AActor
 	bool IsClipEmpty() const;
 	bool IsAmmoFull() const;
 	void LogAmmo();
+
+	UNiagaraComponent *SpawnMuzzleFX();
 
   private:
 	FAmmoData CurrentAmmo;
