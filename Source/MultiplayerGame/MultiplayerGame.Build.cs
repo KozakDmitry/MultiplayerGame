@@ -20,6 +20,7 @@ public class MultiplayerGame : ModuleRules
                                                    "MultiplayerGame/Public/Animations",
                                                    "MultiplayerGame/Public/Pickups",
                                                    "MultiplayerGame/Public/Weapon/Components",
+                                                   "MultiplayerGame/Public/AI",
         });
 
         // Uncomment if you are using Slate UI
