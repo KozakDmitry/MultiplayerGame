@@ -14,4 +14,7 @@ class MULTIPLAYERGAME_API AMGAIController : public AAIController
 {
 	GENERATED_BODY()
 	
+
+	protected:
+	virtual void OnPossess(APawn *InPawn) override;
 };

@@ -8,7 +8,7 @@ public class MultiplayerGame : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Niagara", "PhysicsCore" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Niagara", "PhysicsCore" , "GameplayTasks","NavigationSystem","AIModule"});
 
         PrivateDependencyModuleNames.AddRange(new string[] { "UMG" });
 
@@ -21,6 +21,7 @@ public class MultiplayerGame : ModuleRules
                                                    "MultiplayerGame/Public/Pickups",
                                                    "MultiplayerGame/Public/Weapon/Components",
                                                    "MultiplayerGame/Public/AI",
+                                                   "MultiplayerGame/Public/AI/Tasks",
         });
 
         // Uncomment if you are using Slate UI
