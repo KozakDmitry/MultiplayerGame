@@ -6,6 +6,7 @@
 #include "MGUtils.h"
 #include "Perception/AISense_Sight.h"
 
+UE_DISABLE_OPTIMIZATION
 AActor *UMGAIPerceptionComponent::GetClosestEnemy() const
 {
 	TArray<AActor *> PercieveActors;
@@ -29,7 +30,7 @@ AActor *UMGAIPerceptionComponent::GetClosestEnemy() const
 	for (const auto PerceiveActor : PercieveActors)
 	{
 		const auto HealthComponent = MGUtils::GetComponent<UMGHealthComponent>(PerceiveActor);
-		if (!HealthComponent && !HealthComponent->IsDead())
+		if (HealthComponent && !HealthComponent->IsDead())
 		{
 			float CurrentDistance = (PerceiveActor->GetActorLocation() - Pawn->GetActorLocation()).Size();
 			if (CurrentDistance < BestDistance)
@@ -42,3 +43,4 @@ AActor *UMGAIPerceptionComponent::GetClosestEnemy() const
 	}
 	return BestPawn;
 }
+UE_ENABLE_OPTIMIZATION

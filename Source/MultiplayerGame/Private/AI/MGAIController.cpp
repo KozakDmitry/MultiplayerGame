@@ -25,7 +25,7 @@ void AMGAIController::OnPossess(APawn *InPawn)
 void AMGAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	const auto AimActor = MGAIPerceptionComponent->GetClosestEnemy();
+	const auto AimActor = GetFocusOnActor();
 	SetFocus(AimActor);
 }
 
