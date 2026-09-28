@@ -22,6 +22,7 @@ public class MultiplayerGame : ModuleRules
                                                    "MultiplayerGame/Public/Weapon/Components",
                                                    "MultiplayerGame/Public/AI",
                                                    "MultiplayerGame/Public/AI/Tasks",
+                                                   "MultiplayerGame/Public/AI/Services",
         });
 
         // Uncomment if you are using Slate UI
