@@ -23,6 +23,8 @@ public class MultiplayerGame : ModuleRules
                                                    "MultiplayerGame/Public/AI",
                                                    "MultiplayerGame/Public/AI/Tasks",
                                                    "MultiplayerGame/Public/AI/Services",
+                                                   "MultiplayerGame/Public/AI/EQS",
+                                                   "MultiplayerGame/Public/AI/Decorators",
         });
 
         // Uncomment if you are using Slate UI
