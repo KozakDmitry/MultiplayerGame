@@ -199,6 +199,11 @@ int32 UMGWeaponComponent::GetCurrentWeapon() const
 	return CurrentWeaponIndex;
 }
 
+TSubclassOf<AMGBaseWeapon> UMGWeaponComponent::GetCurrentWeaponClass() const
+{
+	return CurrentWeapon ? CurrentWeapon->GetClass() : nullptr;
+}
+
 bool UMGWeaponComponent::GetWeaponUIData(FWeaponUIData &UIData) const
 {
 	if (CurrentWeapon)

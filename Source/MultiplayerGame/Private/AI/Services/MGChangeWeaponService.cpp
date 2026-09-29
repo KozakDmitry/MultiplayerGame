@@ -1,9 +1,9 @@
 // Multiplayer Game
 
 #include "AI/Services/MGChangeWeaponService.h"
+#include "AIController.h"
 #include "Components/MGAIWeaponComponent.h"
 #include "MGUtils.h"
-#include "AIController.h"
 
 UMGChangeWeaponService::UMGChangeWeaponService()
 {

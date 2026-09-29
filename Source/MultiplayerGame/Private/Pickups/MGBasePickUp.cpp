@@ -41,9 +41,14 @@ void AMGBasePickUp::Tick(float DeltaTime)
 	AddActorLocalRotation(FRotator(0.0f, RotationYawSpeed * DeltaTime, 0.0f));
 }
 
-bool AMGBasePickUp::GivePickUpTo(APawn *PlayerPawn)
+bool AMGBasePickUp::CouldBeTaken() const
 {
 	return false;
+}
+
+bool AMGBasePickUp::GivePickUpTo(APawn *PlayerPawn)
+{
+	return !GetWorldTimerManager().IsTimerActive(RespawnTimerHandle);
 }
 
 void AMGBasePickUp::PickupWasTaken()
@@ -53,7 +58,7 @@ void AMGBasePickUp::PickupWasTaken()
 	{
 		GetRootComponent()->SetVisibility(false, true);
 	}
-	FTimerHandle RespawnTimerHandle;
+	
 	GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &AMGBasePickUp::Respawn, RespawnTime);
 }
 

@@ -29,6 +29,7 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 
 
 	int32 GetCurrentWeapon() const;
+	TSubclassOf<AMGBaseWeapon> GetCurrentWeaponClass() const;
 	int32 CurrentWeaponIndex;
 
 	bool GetWeaponUIData(FWeaponUIData &UIData) const;

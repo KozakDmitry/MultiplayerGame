@@ -31,8 +31,10 @@ class MULTIPLAYERGAME_API AMGBasePickUp : public AActor
   public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	bool CouldBeTaken() const;
 
   private:
+	FTimerHandle RespawnTimerHandle;
 	virtual bool GivePickUpTo(APawn *PlayerPawn);
 	void PickupWasTaken();
 	void Respawn();
