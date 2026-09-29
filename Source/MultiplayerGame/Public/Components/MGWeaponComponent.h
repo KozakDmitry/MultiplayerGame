@@ -22,13 +22,15 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 	// Sets default values for this component's properties
 	UMGWeaponComponent();
 
-	void StartFire();
+	virtual void StartFire();
 	void StopFire();
-	void NextWeapon();
+	virtual void NextWeapon();
 	void Reload();
 
 
 	int32 GetCurrentWeapon() const;
+	int32 CurrentWeaponIndex;
+
 	bool GetWeaponUIData(FWeaponUIData &UIData) const;
 	bool GetWeaponAmmoData(FAmmoData &AmmoData) const;
 
@@ -49,18 +51,22 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 	FName WeaponArmorySocketName = "ArmorySocket";
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage *EquipAnimMontage;
-
-	virtual void BeginPlay() override;
-
-  private:
 	UPROPERTY()
 	AMGBaseWeapon *CurrentWeapon = nullptr;
 	UPROPERTY()
 	TArray<AMGBaseWeapon *> Weapons;
+	virtual void BeginPlay() override;
+
+	bool CanShoot() const;
+	bool CanEquip() const;
+	void EquipWeapon(int32 WeaponIndex);
+
+
+  private:
+
 	UPROPERTY()
 	UAnimMontage *CurrentReloadAnimMontage = nullptr;
 
-	int32 CurrentWeaponIndex;
 	bool EquipAnimInProgress = false;
 	bool ReloadAnimInProgress = false;
 
@@ -68,15 +74,13 @@ class MULTIPLAYERGAME_API UMGWeaponComponent : public UActorComponent
 
 	void SpawnWeapons();
 	void AttachWeaponToSocket(AMGBaseWeapon *Weapon, USceneComponent *SceneComponent, const FName &SocketName);
-	void EquipWeapon(int32 WeaponIndex);
 	void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	void PlayAnimMontage(UAnimMontage *Animation);
 	void InitAnimations();
 	void OnEquipFinished(USkeletalMeshComponent* MeshComponent);
 	void OnReloadFinished(USkeletalMeshComponent *MeshComponent);
 
-	bool CanShoot() const;
-	bool CanEquip() const;
+
 	bool CanReload() const;
 
 	void OnWeaponShot();

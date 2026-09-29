@@ -67,13 +67,26 @@ APlayerController *AMGBaseWeapon::GetPlayerController() const
 
 bool AMGBaseWeapon::GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const
 {
-	const auto Controller = GetPlayerController();
-	if (!Controller)
+	const auto MGCharacter = Cast<ACharacter>(GetOwner());
+	if (!MGCharacter)
 	{
 		return false;
 	}
+	if (MGCharacter->IsPlayerControlled())
+	{
+		const auto Controller = GetPlayerController();
+		if (!Controller)
+		{
+			return false;
+		}
 
-	Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+		Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+	}
+	else {
+		ViewLocation = GetMuzzleWorldLocation();
+		ViewRotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
+	}
+
 	return true;
 }
 FVector AMGBaseWeapon::GetMuzzleWorldLocation() const
@@ -201,12 +214,12 @@ void AMGBaseWeapon::LogAmmo()
 
 UNiagaraComponent *AMGBaseWeapon::SpawnMuzzleFX()
 {
-	return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX,				//
-												 WeaponMesh,			//
-												 MuzzleSocketName,		//
-												 FVector::ZeroVector,	//
-												 FRotator::ZeroRotator, //
-												 EAttachLocation::SnapToTarget, true);
+	return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX,			   //
+														WeaponMesh,			   //
+														MuzzleSocketName,	   //
+														FVector::ZeroVector,   //
+														FRotator::ZeroRotator, //
+														EAttachLocation::SnapToTarget, true);
 }
 
 UE_ENABLE_OPTIMIZATION

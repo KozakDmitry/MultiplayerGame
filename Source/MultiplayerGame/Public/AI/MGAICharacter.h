@@ -20,4 +20,7 @@ class MULTIPLAYERGAME_API AMGAICharacter : public AMGBaseCharacter
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	TObjectPtr<UBehaviorTree> BehaviorTreeAsset = nullptr;
+
+  protected:
+	virtual void OnDeath() override;
 };
