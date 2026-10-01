@@ -3,14 +3,11 @@
 #include "MGCoreTypes.generated.h"
 
 class AMGBaseWeapon;
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature, AMGBaseWeapon*)
-DECLARE_MULTICAST_DELEGATE(FOnShot)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature, AMGBaseWeapon *) DECLARE_MULTICAST_DELEGATE(FOnShot)
 
-DECLARE_MULTICAST_DELEGATE(FOnDeath)
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponChange, int32)
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponShoot, int32)
-DECLARE_MULTICAST_DELEGATE(FOnAmmoChange)
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChange, float, HealthPercent, float, HealthDelta);
+	DECLARE_MULTICAST_DELEGATE(FOnDeath) DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponChange, int32)
+		DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponShoot, int32) DECLARE_MULTICAST_DELEGATE(FOnAmmoChange)
+			DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChange, float, HealthPercent, float, HealthDelta);
 
 class UAnimMontage;
 class UTexture2D;
@@ -28,7 +25,7 @@ struct FAmmoData
 	bool Infinite;
 };
 
-//Weapon
+// Weapon
 USTRUCT(BlueprintType)
 struct FWeaponData
 {
@@ -39,7 +36,6 @@ struct FWeaponData
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	UAnimMontage *ReloadAnimMontage;
 };
-
 
 USTRUCT(BlueprintType)
 struct FWeaponUIData
@@ -52,8 +48,7 @@ struct FWeaponUIData
 	UTexture2D *CrossHairIcon;
 };
 
-
-//VFX
+// VFX
 
 class UNiagaraSystem;
 
@@ -69,7 +64,6 @@ struct FDecalData
 	float LifeTime = 5.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 	float FadeOutTime = 0.7f;
-
 };
 
 USTRUCT(BlueprintType)
@@ -82,7 +76,6 @@ struct FImpactData
 	FDecalData DecalData;
 };
 
-
 USTRUCT(BlueprintType)
 struct FGameData
 {
@@ -90,4 +83,8 @@ struct FGameData
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "1", ClampMax = "100"))
 	int32 PlayersNum = 2;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "1", ClampMax = "10"))
+	int32 RoundNum = 2;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "3", ClampMax = "300"))
+	int32 RoundTime = 10;
 };

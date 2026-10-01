@@ -10,6 +10,7 @@ AMGAIController::AMGAIController()
 {
 	MGAIPerceptionComponent = CreateDefaultSubobject<UMGAIPerceptionComponent>("MGPerceptionComponent");
 	SetPerceptionComponent(*MGAIPerceptionComponent);
+	bWantsPlayerState = true;
 }
 
 void AMGAIController::OnPossess(APawn *InPawn)
