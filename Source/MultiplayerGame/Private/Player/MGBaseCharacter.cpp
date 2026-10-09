@@ -128,6 +128,16 @@ void AMGBaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCom
 	}
 }
 
+void AMGBaseCharacter::SetPlayerColor(const FLinearColor &Color)
+{
+	const auto MaterialInst = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
+	if (!MaterialInst)
+	{
+		return;
+	}
+	MaterialInst->SetVectorParameterValue(MaterialColorName, Color);
+}
+
 void AMGBaseCharacter::Move(const FInputActionValue &Value)
 {
 	const FVector2D MovementVector = Value.Get<FVector2D>();

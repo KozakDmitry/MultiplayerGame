@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Player/MGPlayerState.h"
 
 /**
  * 
@@ -21,5 +22,17 @@ public:
 
 		const auto Component = Actor->GetComponentByClass(T::StaticClass());
 		return Cast<T>(Component);
+	}
+
+	bool static AreEnemies(AController *Controller1, AController *Controller2)
+	{
+		if (!Controller1 || !Controller2 || Controller1 == Controller2)
+		{
+			return false;		
+		}
+		const auto PlayerState1 = Cast<AMGPlayerState>(Controller1->PlayerState);
+		const auto PlayerState2 = Cast<AMGPlayerState>(Controller1->PlayerState);
+
+		return PlayerState1 && PlayerState2 && PlayerState1->GetTeamID() != PlayerState2->GetTeamID();
 	}
 };

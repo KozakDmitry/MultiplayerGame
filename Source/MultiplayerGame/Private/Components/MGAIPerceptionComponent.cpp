@@ -30,7 +30,10 @@ AActor *UMGAIPerceptionComponent::GetClosestEnemy() const
 	for (const auto PerceiveActor : PercieveActors)
 	{
 		const auto HealthComponent = MGUtils::GetComponent<UMGHealthComponent>(PerceiveActor);
-		if (HealthComponent && !HealthComponent->IsDead())
+
+		const auto PiercievePawn = Cast<APawn>(PerceiveActor);
+		const auto AreEnemies = PiercievePawn && MGUtils::AreEnemies(Controller, PiercievePawn->Controller);
+		if (HealthComponent && !HealthComponent->IsDead()&& AreEnemies)
 		{
 			float CurrentDistance = (PerceiveActor->GetActorLocation() - Pawn->GetActorLocation()).Size();
 			if (CurrentDistance < BestDistance)

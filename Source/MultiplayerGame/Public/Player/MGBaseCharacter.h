@@ -67,7 +67,8 @@ class MULTIPLAYERGAME_API AMGBaseCharacter : public ACharacter
 	TObjectPtr<UInputAction> NextWeaponAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> ReloadAction;
-
+	UPROPERTY(EditDefaultsOnly, Category = "Materials")
+	FName MaterialColorName = "Paint Color";
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void OnDeath();
@@ -82,6 +83,7 @@ class MULTIPLAYERGAME_API AMGBaseCharacter : public ACharacter
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
+	void SetPlayerColor(const FLinearColor &Color);
 
   private:
 	bool IsWantToSprint;
