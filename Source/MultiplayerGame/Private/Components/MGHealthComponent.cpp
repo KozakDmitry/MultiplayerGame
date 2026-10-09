@@ -2,6 +2,7 @@
 
 #include "Components/MGHealthComponent.h"
 #include "Engine/World.h"
+#include "MGGameModeBase.h"
 #include "TimerManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(MGHealthComponentLog, All, All)
@@ -40,11 +41,13 @@ void UMGHealthComponent::OnTakeAnyDamageHandle(AActor *OnTakeDamage, float Damag
 
 	if (IsDead())
 	{
+		Killed(InstigatedBy);
 		OnDeath.Broadcast();
 	}
 	else if (AutoHeal && GetWorld())
 	{
-		GetWorld()->GetTimerManager().SetTimer(RegenerationTimerHandle, this, &UMGHealthComponent::HealUpdate, HealUpdateTime, true, RegenerationDelay);
+		GetWorld()->GetTimerManager().SetTimer(RegenerationTimerHandle, this, &UMGHealthComponent::HealUpdate,
+											   HealUpdateTime, true, RegenerationDelay);
 	}
 	PlayCameraShake();
 	// UE_LOG(MGHealthComponentLog, Display, TEXT("Damage: %f"), Damage);
@@ -79,11 +82,22 @@ void UMGHealthComponent::PlayCameraShake()
 		return;
 	}
 	const auto Controller = Player->GetController<APlayerController>();
-	if (!Controller|| !Controller ->PlayerCameraManager)
+	if (!Controller || !Controller->PlayerCameraManager)
 	{
 		return;
 	}
 	Controller->PlayerCameraManager->StartCameraShake(CameraShake);
+}
+
+void UMGHealthComponent::Killed(AController *KillerController)
+{
+	const auto GameMode = Cast<AMGGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (!GameMode)
+	{
+		return;
+	}
+	const auto Player = Cast<APawn>(GetOwner());
+	const auto VictimController = Player ? Player->Controller : nullptr;
 }
 
 bool UMGHealthComponent::TryToHeal(float Amount)
@@ -95,7 +109,5 @@ bool UMGHealthComponent::TryToHeal(float Amount)
 	SetHealth(Health + Amount);
 	return true;
 }
-
-
 
 // Called every frame

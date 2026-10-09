@@ -41,7 +41,7 @@ class MULTIPLAYERGAME_API AMGRifleWeapon : public AMGBaseWeapon
 	FTimerHandle ShotTimerHandle;
 	UPROPERTY()
 	UNiagaraComponent *MuzzleFXComponent;
-
+	AController* GetController() const;
 	void InitMuzzleFX();
 	void SetMuzzleFXVisibility(bool Visible);
 	void SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd);

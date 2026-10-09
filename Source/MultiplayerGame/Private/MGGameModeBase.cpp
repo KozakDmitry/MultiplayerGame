@@ -37,6 +37,17 @@ UClass *AMGGameModeBase::GetDefaultPawnClassForController_Implementation(AContro
 	return Super::GetDefaultPawnClassForController_Implementation(InController);
 }
 
+void AMGGameModeBase::Killed(AController *KillerController, AController *VictimController)
+{
+	const auto KillerPlayerState = KillerController ? Cast<AMGPlayerState>(KillerController->PlayerState) : nullptr;
+	const auto VictimPlayerState = VictimController ? Cast<AMGPlayerState>(VictimController->PlayerState) : nullptr;
+	if (KillerPlayerState && VictimPlayerState)
+	{
+		KillerPlayerState->AddKill();
+		VictimPlayerState->AddDeath();
+	}
+}
+
 void AMGGameModeBase::SpawnBots()
 {
 	if (!GetWorld())
@@ -75,6 +86,7 @@ void AMGGameModeBase::GameTimerUpdate()
 		else
 		{
 			UE_LOG(LogMGGameBaseMode, Display, TEXT("==== GAME OVER ===="));
+			LogPlayerInfo();
 		}
 	}
 }
@@ -154,4 +166,26 @@ void AMGGameModeBase::SetPlayerColor(AController *Controller)
 		return;
 	}
 	Character->SetPlayerColor(PlayerState->GetTeamColor());
+}
+
+void AMGGameModeBase::LogPlayerInfo()
+{
+	if (!GetWorld())
+	{
+		return;
+	}
+	for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+	{
+		const auto Controller = It->Get();
+		if (!Controller)
+		{
+			continue;
+		}
+		const auto PlayerState = Cast<AMGPlayerState>(Controller->PlayerState);
+		if (!PlayerState)
+		{
+			continue;
+		}
+		PlayerState->LogInfo();
+	}
 }

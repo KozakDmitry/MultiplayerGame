@@ -69,4 +69,5 @@ class MULTIPLAYERGAME_API UMGHealthComponent : public UActorComponent
 	void HealUpdate();
 	void SetHealth(float newHealth);
 	void PlayCameraShake();
+	void Killed(AController *KillerController);
 };

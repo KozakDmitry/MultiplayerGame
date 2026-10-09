@@ -48,4 +48,6 @@ class MULTIPLAYERGAME_API AMGGameModeBase : public AGameModeBase
 	FLinearColor DetermineColorByTeamID(int32 TeamID) const;
 
 	void SetPlayerColor(AController *Controller);
+
+	void LogPlayerInfo();
 };
