@@ -9,6 +9,8 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature, AMGBaseWeapon *) DECL
 		DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponShoot, int32) DECLARE_MULTICAST_DELEGATE(FOnAmmoChange)
 			DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChange, float, HealthPercent, float, HealthDelta);
 
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnGameDataChanged, int32, int32, int32);
+
 class UAnimMontage;
 class UTexture2D;
 
@@ -92,4 +94,6 @@ struct FGameData
 	FLinearColor DefaultTeamColor = FLinearColor::Red;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game")
 	TArray<FLinearColor> TeamColors;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "3", ClampMax = "20"))
+	int32 RespawnTime = 5;
 };

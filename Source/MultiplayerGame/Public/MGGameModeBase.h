@@ -25,6 +25,23 @@ class MULTIPLAYERGAME_API AMGGameModeBase : public AGameModeBase
 
 	void Killed(AController *KillerController, AController *VictimController);
 
+	void RespawnRequest(AController *Controller);
+
+	FOnGameDataChanged OnGameDataChanged;
+
+	int32 GetCurrentRound() const
+	{
+		return CurrentRound;
+	}
+	int32 GetRoundNum() const
+	{
+		return GameData.RoundNum;
+	}
+	int32 GetRoundCountDown() const
+	{
+		return RoundCountDown;
+	}
+
   protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game")
 	TSubclassOf<AAIController> AIControllerClass;
@@ -50,4 +67,5 @@ class MULTIPLAYERGAME_API AMGGameModeBase : public AGameModeBase
 	void SetPlayerColor(AController *Controller);
 
 	void LogPlayerInfo();
+	void StartRespawn(AController *Controller);
 };

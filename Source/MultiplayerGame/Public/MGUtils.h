@@ -9,6 +9,8 @@
 /**
  * 
  */
+
+UE_DISABLE_OPTIMIZATION
 class MULTIPLAYERGAME_API MGUtils
 {
 public:
@@ -31,8 +33,12 @@ public:
 			return false;		
 		}
 		const auto PlayerState1 = Cast<AMGPlayerState>(Controller1->PlayerState);
-		const auto PlayerState2 = Cast<AMGPlayerState>(Controller1->PlayerState);
+		const auto PlayerState2 = Cast<AMGPlayerState>(Controller2->PlayerState);
 
 		return PlayerState1 && PlayerState2 && PlayerState1->GetTeamID() != PlayerState2->GetTeamID();
 	}
-};
+}
+UE_ENABLE_OPTIMIZATION
+
+;
+

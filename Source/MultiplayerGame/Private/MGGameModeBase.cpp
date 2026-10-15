@@ -6,6 +6,8 @@
 #include "Player/MGPlayerController.h"
 #include "Player/MGPlayerState.h"
 #include "UI/MGGameHUD.h"
+#include "MGUtils.h"
+#include "Components/MGRespawnComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogMGGameBaseMode, All, All)
 AMGGameModeBase::AMGGameModeBase()
@@ -46,7 +48,10 @@ void AMGGameModeBase::Killed(AController *KillerController, AController *VictimC
 		KillerPlayerState->AddKill();
 		VictimPlayerState->AddDeath();
 	}
+	OnGameDataChanged.Broadcast(CurrentRound, GameData.RoundNum, RoundCountDown);
+	StartRespawn(VictimController);
 }
+
 
 void AMGGameModeBase::SpawnBots()
 {
@@ -67,6 +72,7 @@ void AMGGameModeBase::SpawnBots()
 void AMGGameModeBase::StartRound()
 {
 	RoundCountDown = GameData.RoundTime;
+	OnGameDataChanged.Broadcast(CurrentRound, GameData.RoundNum, RoundCountDown);
 	GetWorldTimerManager().SetTimer(GameRoundTimerHandle, this, &AMGGameModeBase::GameTimerUpdate, 1.0f, true);
 }
 
@@ -82,6 +88,7 @@ void AMGGameModeBase::GameTimerUpdate()
 			++CurrentRound;
 			ResetPlayers();
 			StartRound();
+			return;
 		}
 		else
 		{
@@ -89,6 +96,7 @@ void AMGGameModeBase::GameTimerUpdate()
 			LogPlayerInfo();
 		}
 	}
+	OnGameDataChanged.Broadcast(CurrentRound, GameData.RoundNum, RoundCountDown);
 }
 
 void AMGGameModeBase::ResetPlayers()
@@ -188,4 +196,18 @@ void AMGGameModeBase::LogPlayerInfo()
 		}
 		PlayerState->LogInfo();
 	}
+}
+
+void AMGGameModeBase::StartRespawn(AController *Controller)
+{
+	const auto RespawnComponent = MGUtils::GetComponent<UMGRespawnComponent>(Controller);
+	if (!RespawnComponent)
+	{
+		return;
+	}
+	RespawnComponent->Respawn(GameData.RespawnTime);
+}
+void AMGGameModeBase::RespawnRequest(AController *Controller)
+{
+	ResetOnePlayer(Controller);
 }
